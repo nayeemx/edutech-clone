@@ -45,10 +45,10 @@ const HeroPage = () => {
         <p className="text-[1rem] text-center mt-5">
           without losing the human touch
         </p>
-        <div className="flex items-center my-4">
-          <span className="before:block before:flex-grow before:h-[2px] before:bg-gray-200 before:w-[30vw]"></span>
-          <span className="px-4 text-nowrap">Some Text</span>
-          <span className="after:block after:flex-grow after:h-[2px] after:bg-gray-200 after:w-[30vw]"></span>
+        <div className="flex items-center justify-between my-4">
+          <span className="before:block before:flex-grow before:h-[2px] before:bg-gray-200 before:w-[24vw]"></span>
+          <span className="px-4 text-nowrap">For</span>
+          <span className="after:block after:flex-grow after:h-[2px] after:bg-gray-200 after:w-[24vw]"></span>
         </div>
 
         {/* cards */}

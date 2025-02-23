@@ -74,19 +74,19 @@ const LoggingPage = () => {
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
                   type="button"
-                  className="inline-flex justify-center items-center gap-2 w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex justify-center items-center gap-2 w-full text-sm font-medium text-gray-700"
                   id="options-menu"
                   aria-haspopup="true"
                   aria-expanded={showDropdown}
                 >
                   {selectedFlag}
-                  <span>{language}</span>
-                  <MdKeyboardArrowDown />
+                  <span className="relative top-[0.4vh]">{language}</span>
+                  <MdKeyboardArrowDown className="text-lg" />
                 </button>
               </div>
 
               {showDropdown && (
-                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="origin-top-right absolute right-0 mt-2 w-[8vw] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                   <div
                     className="py-1"
                     role="menu"
@@ -207,7 +207,7 @@ const LoggingPage = () => {
                         block
                         type="primary"
                         htmlType="submit"
-                        className="mt-[10vh] py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         style={{
                           backgroundColor: "#038fde",
                           borderColor: "#038fde",
