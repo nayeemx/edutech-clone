@@ -7,7 +7,6 @@ import senticard_pro from "../../assets/sentinal/sentinel-card-pro.png";
 import senticard_elit from "../../assets/sentinal/sentinel-card-elite.png";
 import expensive from "../../assets/sentinal/sentinel-without-package.svg";
 import cardimg from "../../assets/sentinal/sentinel-companion.svg";
-import CheckoutModal from "../../components/checkoutModal/CheckoutModal";
 import clsx from "clsx";
 import table_sentinal from "../../assets/sentinal/Sentinel-Logo-Original.svg";
 import zkt from "../../assets/sentinal/zkteco.svg";
@@ -28,6 +27,7 @@ import client10 from "../../assets/sentinal/client/albatrossEducationLogo.png";
 import client11 from "../../assets/sentinal/client/MadrasatulIhsanAlIslamiaLogo.png";
 import { RiChat2Fill } from "react-icons/ri";
 import { Sfooter } from "../../components/Footer/Footer";
+import CheckoutModal from './../../components/CheckoutModal/CheckoutModal';
 
 const SentinalPage = () => {
     // Use a single state for modal visibility

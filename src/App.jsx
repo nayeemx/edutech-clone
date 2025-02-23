@@ -1,5 +1,5 @@
 // app.jsx
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import Layout from "./Layout/Layout";
 import HomePage from "./pages/HomePage/HomePage";
 import BlogPage from "./pages/BlogPage/BlogPage";
@@ -20,32 +20,34 @@ import SmsPage from "./pages/SmsPage/SmsPage";
 import CaseStudy from "./pages/CaseStudy/CaseStudy";
 import ForgotPass from "./pages/LoggingPage/ForgotPass";
 
-const App = createBrowserRouter([
+// Export the router!
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/", element: <HomePage /> },
-      { path: "/home", element: <HomePage /> },
-      { path: "/blog", element: <BlogPage /> },
-      { path: "/blog/rfid", element: <RfidPage /> },
-      { path: "/blog/edupay", element: <EduPay /> },
-      { path: "/blog/admission", element: <Admission /> },
-      { path: "/blog/tag", element: <Tagging /> },
-      { path: "/blog/sentinal-blog", element: <Sentinal /> },
-      { path: "/casestudy", element: <CaseStudy /> },
-      { path: "/pricing", element: <PricingPage /> },
-      { path: "/contact", element: <ContactPage /> },
-      { path: "/eduai", element: <EduAi /> },
-      { path: "/forgot-password", element: <ForgotPassword /> },
-      { path: "*", element: <NotfoundPage /> },
+      { index: true, element: <HomePage /> }, // Use 'index' for the root
+      { path: "home", element: <HomePage /> },
+      { path: "blog", element: <BlogPage /> },
+      { path: "blog/rfid", element: <RfidPage /> },
+      { path: "blog/edupay", element: <EduPay /> },
+      { path: "blog/admission", element: <Admission /> },
+      { path: "blog/tag", element: <Tagging /> },
+      { path: "blog/sentinal-blog", element: <Sentinal /> },
+      { path: "casestudy", element: <CaseStudy /> },
+      { path: "pricing", element: <PricingPage /> },
+      { path: "contact", element: <ContactPage /> },
+      { path: "eduai", element: <EduAi /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
     ],
   },
-  { path: "/sentinal", element: <SentinalPage /> }, // Top-level route, no Layout
-  { path: "/sms", element: <SmsPage /> }, // Top-level route, no Layout
-  { path: "/login", element: <LoggingPage /> },
-  { path: "/forgotpass", element: <ForgotPass /> },
-  { path: "/signup", element: <SignupPage /> },
+  { path: "sentinal", element: <SentinalPage /> },
+  { path: "sms", element: <SmsPage /> },
+  { path: "login", element: <LoggingPage /> },
+  { path: "forgotpass", element: <ForgotPass /> },
+  { path: "signup", element: <SignupPage /> },
+  { path: "*", element: <NotfoundPage /> }, // Put the wildcard route LAST
 ]);
 
-export default App;
+// No need for a separate App component now.
+// We directly export the router, and use it in main.jsx

@@ -7,4 +7,5 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
+  base: '/', // Add this for clarity and potential subdirectory deployments
 })
