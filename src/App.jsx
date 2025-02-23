@@ -18,7 +18,7 @@ import NotfoundPage from "./pages/NotfoundPage/NotfoundPage";
 import SentinalPage from "./pages/SentinalPage/SentinalPage";
 import SmsPage from "./pages/SmsPage/SmsPage";
 import CaseStudy from "./pages/CaseStudy/CaseStudy";
-import ForgotPass from "./pages/LoggingPage/forgotpass";
+import ForgotPass from "./pages/LoggingPage/ForgotPass";
 
 const App = createBrowserRouter([
   {
