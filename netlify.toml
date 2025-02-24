@@ -1,3 +1,2 @@
 [[redirects]]
-from = "/*"
-status = 200
+{:from=>"/*", :status=>200}
