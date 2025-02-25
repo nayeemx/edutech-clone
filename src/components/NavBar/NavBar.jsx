@@ -8,6 +8,7 @@ import Card2im1 from "../../assets/card2im1.png";
 import Card2im2 from "../../assets/card2im2.png";
 import { MdWbSunny } from "react-icons/md";
 import { Link } from "react-router-dom";
+import star from "../../assets/eduai/star4.png";
 
 const NavBar = () => {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
@@ -17,7 +18,7 @@ const NavBar = () => {
   return (
     <>
       <div className="bg-gray-100 sticky top-0 z-50">
-      <div className="w-10/12 mx-auto p-4 flex justify-between items-center space-x-4">
+      <div className="w-10/12 mx-auto p-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Link to="/">
             <img src={Logo} alt="" className="w-32" />
@@ -25,7 +26,7 @@ const NavBar = () => {
         </div>
 
         <div>
-          <ul className="flex space-x-4 font-semibold ml-auto">
+          <ul className="flex space-x-4 text-[#313a52] font-semibold ml-auto">
             <li className="relative">
               <button
                 className="hover:text-blue-500"
@@ -179,7 +180,12 @@ const NavBar = () => {
               <Link to="/contact">Contact</Link>
             </li>
             <li className="hover:text-blue-500">
-              <Link to="/eduai">Edutechs AI</Link>
+              <Link to="/eduai">
+              <div className="flex items-center gap-2">
+              <p>Edutechs AI</p>
+              <img src={star} alt="" className="w-5 h-5" />
+              </div>
+              </Link>
             </li>
           </ul>
         </div>

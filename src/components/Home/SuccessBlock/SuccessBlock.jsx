@@ -16,18 +16,13 @@ const SuccessBlock = () => {
 
         <div className="my-[6rem] grid grid-cols-5 gap-4">
           {/* card 1 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
-            <img src={Img1} alt="" className="w-full h-[45vh] object-cover" />
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
+            <img src={Img1} alt="" className="w-full h-[45vh] object-cover rounded-3xl" />
           </div>
 
           {/* card 2 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
             <div className="p-8">
               <div className="flex items-center mb-4">
@@ -40,7 +35,7 @@ const SuccessBlock = () => {
                   <h3 className="text-lg font-semibold text-gray-800">
                     Laila Arjuman Banu
                   </h3>
-                  <p className="text-gray-600">Principal, Mac Master School</p>
+                  <p className="text-[#9aa5b1] font-semibold">Principal, Mac Master School</p>
                 </div>
               </div>
               <p className="text-gray-700">
@@ -49,26 +44,16 @@ const SuccessBlock = () => {
                 our teachers and students better!
               </p>
             </div>
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
           </div>
 
           {/* card 3 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
-            <img src={Img2} alt="" className="w-full h-[45vh] object-cover" />
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
+            <img src={Img2} alt="" className="w-full h-[45vh] object-cover rounded-3xl" />
           </div>
 
           {/* card 4 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
             <div className="p-8">
               <div className="flex items-center mb-4">
@@ -79,37 +64,27 @@ const SuccessBlock = () => {
                 />
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    Refayat Sir
+                  Refayat Sir
                   </h3>
-                  <p className="text-gray-600">Teacher, Legends School</p>
+                  <p className="text-[#9aa5b1] font-semibold">Teacher, Legends School</p>
                 </div>
               </div>
               <p className="text-gray-700">
-                Thank you for leading the continuous improvement of Edutechs
+              Thank you for leading the continuous improvement of Edutechs
                 which made our businesses smoother than before. May Edutechs
                 become bigger and better over time. Profound regards.
               </p>
             </div>
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
           </div>
 
           {/* card 5 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
-            <img src={Img3} alt="" className="w-full h-[45vh] object-cover" />
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
+            <img src={Img3} alt="" className="w-full h-[45vh] object-cover rounded-3xl" />
           </div>
 
           {/* card 6 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
             <div className="p-8">
               <div className="flex items-center mb-4">
@@ -131,26 +106,16 @@ const SuccessBlock = () => {
                 digital version.
               </p>
             </div>
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
           </div>
 
           {/* card 7 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
-            <img src={Img4} alt="" className="w-full h-[45vh] object-cover" />
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
+            <img src={Img4} alt="" className="w-full h-[45vh] object-cover rounded-3xl" />
           </div>
 
           {/* card 8 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl border-b-8 border-[#e3e8f3] overflow-hidden relative">
             {/* Testimonial Content */}
             <div className="p-8">
               <div className="flex items-center mb-4">
@@ -172,26 +137,16 @@ const SuccessBlock = () => {
                 features that I have asked for.
               </p>
             </div>
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
           </div>
 
           {/* card 9 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl overflow-hidden relative border-b-8 border-[#e3e8f3]">
             {/* Testimonial Content */}
-            <img src={Img5} alt="" className="w-full h-[45vh] object-cover" />
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
-            </div>
+            <img src={Img5} alt="" className="w-full h-[45vh] object-cover rounded-3xl" />
           </div>
 
           {/* card 10 */}
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          <div className="max-w-md mx-auto bg-white rounded-3xl border-b-8 border-[#e3e8f3] overflow-hidden relative">
             {/* Testimonial Content */}
             <div className="p-8">
               <div className="flex items-center mb-4">
@@ -213,11 +168,6 @@ const SuccessBlock = () => {
                 tracking payments, verifying records, and sending reminders were
                 all challenges. Now, the process is effortless.
               </p>
-            </div>
-
-            {/* Curved Shadow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-6 -rotate-[1deg]">
-              <div className="h-full bg-gradient-to-b from-transparent to-gray-400 rounded-b-xl skew-y-1"></div>
             </div>
           </div>
         </div>
