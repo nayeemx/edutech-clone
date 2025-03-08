@@ -11,14 +11,14 @@ import Sentinal from "./pages/BlogPage/Sentinal";
 import PricingPage from "./pages/PricingPage/PricingPage";
 import ContactPage from "./pages/ContactPage/ContactPage";
 import EduAi from "./pages/EduAi/EduAi";
-import LoggingPage from "./pages/LoggingPage/LoggingPage";
-import SignupPage from "./pages/SignupPage/SignupPage";
-import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import NotfoundPage from "./pages/NotfoundPage/NotfoundPage";
 import SentinalPage from "./pages/SentinalPage/SentinalPage";
 import SmsPage from "./pages/SmsPage/SmsPage";
 import CaseStudy from "./pages/CaseStudy/CaseStudy";
-import ForgotPass from "./pages/LoggingPage/ForgotPass";
+import AuthLayout from "./Layout/AuthLayout";
+import LoggingPage from './pages/LoggingPage/LoggingPage';
+import SignupPage from './pages/SignupPage/SignupPage';
+import ForgotPass from './pages/LoggingPage/ForgotPass';
 
 // Export the router!
 export const router = createBrowserRouter([
@@ -38,16 +38,16 @@ export const router = createBrowserRouter([
       { path: "pricing", element: <PricingPage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "eduai", element: <EduAi /> },
-      { path: "forgot-password", element: <ForgotPassword /> },
     ],
   },
   { path: "sentinal", element: <SentinalPage /> },
   { path: "sms", element: <SmsPage /> },
-  { path: "login", element: <LoggingPage /> },
-  { path: "forgotpass", element: <ForgotPass /> },
-  { path: "signup", element: <SignupPage /> },
+  { path: "auth", element: <AuthLayout />,
+    children: [
+      { path: "/auth/login", element: <LoggingPage /> },
+      { path: "/auth/sign-up", element: <SignupPage /> },
+      { path: "/auth/forgotPass", element: <ForgotPass /> },
+    ] ,
+   },
   { path: "*", element: <NotfoundPage /> }, // Put the wildcard route LAST
 ]);
-
-// No need for a separate App component now.
-// We directly export the router, and use it in main.jsx

@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { RiChat2Fill } from "react-icons/ri";
 import logo from "../../assets/logo-white.png"; // Make sure path is correct
@@ -10,16 +11,23 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 import { Button, Form, Input, Select } from "antd"; // Import Select
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxPerson } from "react-icons/rx";
 import { AiOutlineBank } from "react-icons/ai";
 import { AiOutlinePhone } from "react-icons/ai";
 import { AiFillLock } from "react-icons/ai";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"; // Import auth functions
+import { auth } from "../../firebase/firebase.config"; // Import your configured auth object
+import { toast } from 'react-toastify'; // Import for error/success messages
+import 'react-toastify/dist/ReactToastify.css'; //for toastify
+import { getDatabase, ref, set } from "firebase/database"; //for database
+import app from "../../firebase/firebase.config"; //for realtime database
+
 
 const SignupPage = () => {
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-  };
+  // const onFinish = (values) => {
+  //   console.log("Received values of form: ", values);
+  // };
 
   const [language, setLanguage] = useState("English");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -28,6 +36,8 @@ const SignupPage = () => {
   );
   const dropdownRef = useRef(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate(); // Hook for navigation
+  const [loading, setLoading] = useState(false); // For loading state
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
@@ -66,12 +76,53 @@ const SignupPage = () => {
 
   const { Option } = Select; // Destructure Option from Select
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = new FormData(e.target);
-    const data = Object.fromEntries(form.entries());
-    console.log(data);
-    // Add your form submission logic here
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const form = new FormData(e.target);
+  //   const data = Object.fromEntries(form.entries());
+  //   console.log(data);
+  //   // Add my form submission logic here
+  // };
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    console.log("Received values of form: ", values);
+  
+    try {
+      // Create the user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      console.log(user);
+  
+      // Update the user's profile (display name)
+      await updateProfile(auth.currentUser, {
+        displayName: values.name,
+        // photoURL: "https://example.com/jane-q-user/profile.jpg" // i can set up later
+      });
+  
+      // Store additional user data (role, institution, AND NAME) in Firebase (Realtime Database)
+      const db = getDatabase(app);
+      const userRef = ref(db, 'users/' + user.uid);
+  
+      await set(userRef, {
+        accountType: values.accountType,
+        institutionName: values.institutionName,
+        phone: values.phone,
+        email: values.email,
+        name: values.name, // ADD THIS LINE
+      });
+  
+      toast.success("Account created successfully!");
+      navigate('/auth/login');
+  
+    } catch (error) {
+      console.error("Error during signup:", error);
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      toast.error(`${errorCode} - ${errorMessage}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -157,7 +208,7 @@ const SignupPage = () => {
 
                 {/* Form */}
                 <Form
-                action={handleSubmit}
+                // action={handleSubmit}
                   name="signup"
                   onFinish={onFinish}
                   style={{ maxWidth: 360 }}
@@ -317,8 +368,9 @@ const SignupPage = () => {
                         backgroundColor: "#038fde",
                         borderColor: "#038fde",
                       }}
+                      disabled={loading} // Disable the button while loading
                     >
-                      Sign Up
+                      {loading ? 'Signing Up...' : 'Sign Up'}
                     </Button>
                   </Form.Item>
                 </Form>

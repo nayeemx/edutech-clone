@@ -220,12 +220,12 @@ const LoggingPage = () => {
                 </div>
 
                 <div className="mt-4 flex justify-between">
-                  <Link to="/forgotpass">
+                  <Link to="/auth/forgotpass">
                     <button className="text-sm text-[#038fde] cursor-pointer">
                       Forgot Password
                     </button>
                   </Link>
-                  <Link to="/signup">
+                  <Link to="/auth/sign-up">
                     <button className="text-sm text-[#038fde] cursor-pointer">
                       Sign Up
                     </button>

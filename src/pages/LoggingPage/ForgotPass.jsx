@@ -180,7 +180,7 @@ const ForgotPass = () => {
                   </Form>
                 </div>
                 <div className="mt-4">
-                  <Link to="/login">
+                  <Link to="/auth/login">
                     <button className="text-sm text-[#038fde] flex gap-2">
                       <FaArrowLeft /> Back {/* Changed Text */}
                     </button>

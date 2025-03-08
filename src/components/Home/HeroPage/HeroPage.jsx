@@ -5,6 +5,8 @@ import Admin from "../../../assets/school_leader_badge.png";
 
 // Import the necessary icons from react-icons/fa (Font Awesome)
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { useContext } from "react";
+import { AuthContext } from './../../../provider/AuthProvider';
 
 const HeroPage = () => {
   // Function to generate the star rating display
@@ -39,9 +41,12 @@ const HeroPage = () => {
   // Example rating (you can replace this with dynamic data)
   const rating = 4.6; // example
 
+  const {user} = useContext(AuthContext);
+
   return (
     <>
       <div className="w-8/12 mx-auto mt-10 text-lg">
+      <p>{user && user.name}</p>
         <h1 className="text-[4rem] text-[#313a52] w-11/12 justify-self-center font-wrap font-bold text-center leading-[1.2]">
           Bringing Classrooms Together with Technology
         </h1>

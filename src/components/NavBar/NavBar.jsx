@@ -194,12 +194,12 @@ const NavBar = () => {
           <button className="text-[1.8rem]">
             <MdWbSunny />
           </button>
-          <Link to="/login">
+          <Link to="/auth/login">
             <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full border-2 border-blue-500 hover:bg-blue-200 text-blue-500 hover:text-blue-800">
               <p className="relative top-[0.47vh]">Login</p>
             </button>
           </Link>
-          <Link to="/signup">
+          <Link to="/auth/sign-up">
             <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full bg-blue-500 hover:bg-blue-800 border-2 border-blue-500 hover:border-blue-800 text-white">
               <p className="relative top-[0.54vh]">Sign Up</p>
             </button>
