@@ -1,4 +1,18 @@
 [[redirects]]
-from = "/*"
-to = "/"
-status = 200
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*.html"
+    [headers.values]
+      Cache-Control = "no-store"
+
+[[headers]]
+  for = "/*.js"
+    [headers.values]
+      Cache-Control = "no-store"
+[[headers]]
+  for = "/*.css"
+    [headers.values]
+      Cache-Control = "no-store"
