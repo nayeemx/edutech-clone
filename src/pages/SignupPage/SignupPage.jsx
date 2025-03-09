@@ -1,84 +1,100 @@
+// src/pages/SignupPage/SignupPage.jsx
 import { useState, useRef, useEffect } from "react";
 import { RiChat2Fill } from "react-icons/ri";
-import logo from "../../assets/logo-white.png"; // Make sure path is correct
-import { MdWbSunny } from "react-icons/md"; // Import MdLockOutline
+import logo from "../../assets/logo-white.png";
+import { MdWbSunny } from "react-icons/md";
 import { BD, US } from "country-flag-icons/react/3x2";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import {
-  MailOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
-import { Button, Form, Input, Select } from "antd"; // Import Select
-import { Link } from "react-router-dom";
+import { MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Button, Form, Input, Select, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { RxPerson } from "react-icons/rx";
 import { AiOutlineBank } from "react-icons/ai";
 import { AiOutlinePhone } from "react-icons/ai";
 import { AiFillLock } from "react-icons/ai";
+import { useAuth } from "../../provider/AuthProvider";
+import { db } from "../../firebase/firebase.config"; // Import db
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/firebase.config";
 
 const SignupPage = () => {
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-  };
-
   const [language, setLanguage] = useState("English");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedFlag, setSelectedFlag] = useState(
-    <US className="w-6 h-auto" />
-  );
+  const [selectedFlag, setSelectedFlag] = useState(<US className="w-6 h-auto" />);
   const dropdownRef = useRef(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { createUser } = useAuth(); // Still needed for creating the auth user
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setShowDropdown(false);
-    if (lang === "English") {
-      setSelectedFlag(<US className="w-6 h-auto" />);
-    } else if (lang === "Bangla") {
-      setSelectedFlag(<BD className="w-6 h-auto" />);
-    }
+    setSelectedFlag(lang === "English" ? <US className="w-6 h-auto" /> : <BD className="w-6 h-auto" />);
   };
+
+    const customPlaceholderStyle = {
+    "::placeholder": { color: "#bfbfbf" },
+    ":-ms-input-placeholder": { color: "#bfbfbf" },
+    "::-ms-input-placeholder": { color: "#bfbfbf" },
+  };
+  const { Option } = Select;
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setShowDropdown(false);
     }
   };
-
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const customPlaceholderStyle = {
-    "::placeholder": {
-      color: "#bfbfbf",
-    },
-    ":-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
-    "::-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
+  const onFinish = async (values) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      if (!user) {
+        message.error("Account creation failed. Please try again.");
+        return;
+      }
+
+      // Store user data *and then* redirect
+      await db.ref(`users/${user.uid}`).set({
+        name: values.name,
+        institutionName: values.institutionName,
+        phone: values.phone,
+        accountType: values.accountType, // Store account type
+        email: values.email,
+      });
+
+        // Redirect based on account type *after* successful database write
+        if (values.accountType === "teacher") {
+          navigate("/teacher");
+        } else if (values.accountType === "admin") {
+          navigate("/admin");
+        } else if (values.accountType === "business") {
+          navigate("/business");
+        } else {
+          navigate("/"); // Default fallback
+        }
+      message.success("Account created successfully!");
+      form.resetFields();
+    } catch (error) {
+      console.error("Signup error:", error);
+      message.error(error.message);
+    }
   };
-
-  const { Option } = Select; // Destructure Option from Select
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = new FormData(e.target);
-    const data = Object.fromEntries(form.entries());
-    console.log(data);
-    // Add your form submission logic here
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+    message.error("Please fill in all required fields correctly.");
   };
-
-  return (
-    <>
-      <section className="bg-[#f5f5f5] h-[107vh] flex justify-center items-center relative">
-        {/* Language Dropdown and Chatbot (Same as Login Page) */}
-        <div>
+   return (
+        // ... (your JSX - NO CHANGES needed here) ...
+        <section className="bg-[#f5f5f5] min-h-screen flex justify-center items-center relative">
+      {/* ... (Language Dropdown and Chatbot code - NO CHANGES) ... */}
+      <div>
           {/* Language Dropdown */}
           <div className="absolute top-2 right-4 flex items-center gap-6">
             <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -130,10 +146,9 @@ const SignupPage = () => {
             </span>
           </div>
         </div>
-
-        {/* Main Form Area */}
-        <div className="relative">
-          <div className="w-[55vw] h-auto mx-auto rounded-lg shadow-lg bg-white">
+      {/* Main Form Area */}
+      <div className="relative">
+          <div className="w-[55vw]  mx-auto rounded-lg shadow-lg bg-white">
             {" "}
             {/* Adjusted height to h-auto */}
             <div className="flex">
@@ -156,14 +171,16 @@ const SignupPage = () => {
                 </p>
 
                 {/* Form */}
-                <Form
-                action={handleSubmit}
-                  name="signup"
-                  onFinish={onFinish}
-                  style={{ maxWidth: 360 }}
-                  layout="vertical"
-                >
-                  <Form.Item
+        <Form
+          form={form}
+          name="signup"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          style={{ maxWidth: 360 }}
+          layout="vertical"
+          autoComplete="off"
+        >
+           <Form.Item
                     name="accountType"
                     label={
                       <span className="text-[#3e416d] font-bold">
@@ -173,6 +190,7 @@ const SignupPage = () => {
                     initialValue="teacher" // Set initial value to "teacher"
                     rules={[
                       {
+                        required: true,
                         message: "Please select an account type!",
                       },
                     ]}
@@ -191,6 +209,7 @@ const SignupPage = () => {
                     } // Added Label
                     rules={[
                       {
+                        required: true,
                         message: "Please input your name!",
                       },
                     ]}
@@ -215,6 +234,7 @@ const SignupPage = () => {
                     }
                     rules={[
                       {
+                        required: true,
                         message: "Please input your institution name!",
                       },
                     ]}
@@ -237,8 +257,13 @@ const SignupPage = () => {
                     }
                     rules={[
                       {
+                        required: true,
                         message: "Please input your phone number!",
                       },
+                       {
+                        pattern: /^\+?\d{1,3}[-\s]?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4,6}$/,
+                        message: "Please enter a valid phone number!",
+                        },
                     ]}
                   >
                     <Input
@@ -257,12 +282,13 @@ const SignupPage = () => {
                     label={
                       <span className="text-[#3e416d] font-bold">Email</span>
                     }
-                    rules={[
+                   rules={[
                       {
                         type: "email",
                         message: "The input is not a valid email!",
                       },
                       {
+                        required: true,
                         message: "Please input your Email!",
                       },
                     ]}
@@ -284,10 +310,15 @@ const SignupPage = () => {
                       <span className="text-[#3e416d] font-bold">Password</span>
                     } // Added Label
                     rules={[
-                      {
-                        message: "Please input your Password!",
-                      },
-                    ]}
+                        {
+                          required: true,
+                          message: "Please input your Password!",
+                        },
+                        {
+                          min: 6, // Add minimum length validation
+                          message: "Password must be at least 6 characters!",
+                        },
+                      ]}
                   >
                     <Input.Password
                       prefix={<AiFillLock className="text-[#545454]" />}
@@ -306,24 +337,21 @@ const SignupPage = () => {
                       }}
                     />
                   </Form.Item>
+          <Form.Item>
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              className="mt-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              style={{ backgroundColor: "#038fde", borderColor: "#038fde" }}
+            >
+              Sign Up
+            </Button>
+          </Form.Item>
+        </Form>
 
-                  <Form.Item>
-                    <Button
-                      block
-                      type="primary"
-                      htmlType="submit"
-                      className="mt-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                      style={{
-                        backgroundColor: "#038fde",
-                        borderColor: "#038fde",
-                      }}
-                    >
-                      Sign Up
-                    </Button>
-                  </Form.Item>
-                </Form>
-
-                <div className="mt-2 flex justify-between">
+                {/* ... (Rest of the form and links - NO CHANGES) ... */}
+                 <div className="mt-2 flex justify-between">
                   <Link to="/auth/forgotpass">
                     <button className="text-sm text-[#038fde] cursor-pointer">
                       Forgot Password
@@ -345,9 +373,8 @@ const SignupPage = () => {
             <RiChat2Fill className="text-white text-4xl -rotate-[9deg] relative top-[0.4vh] left-[0.3vw]" />
           </p>
         </div>
-      </section>
-    </>
-  );
+    </section>
+    );
 };
 
 export default SignupPage;

@@ -1,16 +1,17 @@
-// components/Home/HeroPage/HeroPage.jsx (WITH THE FIX)
 import Teacher from "../../../assets/teacher_badge.png";
 import Student from "../../../assets/student_badge.png";
 import Parents from "../../../assets/parent_badge.png";
 import Admin from "../../../assets/school_leader_badge.png";
+
+// Import the necessary icons from react-icons/fa (Font Awesome)
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
-// CORRECT: Use the custom hook!
-import { useAuth } from "../../../provider/AuthProvider";
+import { useContext } from "react";
+import { AuthContext } from './../../../provider/AuthProvider';
 
 const HeroPage = () => {
+  // Function to generate the star rating display
   const renderStars = (rating) => {
-    // ... (Your star rendering function - no changes needed)
-     const stars = [];
+    const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating - fullStars >= 0.5;
 
@@ -37,24 +38,15 @@ const HeroPage = () => {
     return stars;
   };
 
-  const rating = 4.6;
+  // Example rating (you can replace this with dynamic data)
+  const rating = 4.6; // example
 
-  // Use the custom hook!  It handles the loading state correctly.
-  const { user, loading } = useAuth();
-
-  // IMPORTANT: Check the loading state!
-  if (loading) {
-    return <div>Loading user data...</div>; // Or a spinner
-  }
-
+  const {user} = useContext(AuthContext);
 
   return (
     <>
       <div className="w-8/12 mx-auto mt-10 text-lg">
-          {/* Conditional rendering: Only show if user exists */}
-          <p>{user ? `Welcome, ${user.email}` : "Not logged in"}</p>  {/* Show email (more common) */}
-        {/* ... rest of your HeroPage content ... */}
-
+      <p>{user && user.name}</p>
         <h1 className="text-[4rem] text-[#313a52] w-11/12 justify-self-center font-wrap font-bold text-center leading-[1.2]">
           Bringing Classrooms Together with Technology
         </h1>

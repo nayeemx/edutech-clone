@@ -1,3 +1,4 @@
+// src/pages/LoggingPage/LoggingPage.jsx
 import { useState, useRef, useEffect } from "react";
 import { RiChat2Fill } from "react-icons/ri";
 import logo from "../../assets/logo-white.png";
@@ -5,35 +6,36 @@ import { MdWbSunny } from "react-icons/md";
 import { BD, US } from "country-flag-icons/react/3x2";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoIosLock } from "react-icons/io";
-import {
-  MailOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
-import { Link } from "react-router";
+import { MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Button, Form, Input, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../provider/AuthProvider";
+import { db } from "../../firebase/firebase.config"; // Import the database
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/firebase.config";
+
 
 const LoggingPage = () => {
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-  };
-
   const [language, setLanguage] = useState("English");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedFlag, setSelectedFlag] = useState(
-    <US className="w-6 h-auto" />
-  );
+  const [selectedFlag, setSelectedFlag] = useState(<US className="w-6 h-auto" />);
   const dropdownRef = useRef(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { signIn } = useAuth(); // Still needed for initial auth check
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+
+
+   const customPlaceholderStyle = {
+    "::placeholder": { color: "#bfbfbf" },
+    ":-ms-input-placeholder": { color: "#bfbfbf" },
+    "::-ms-input-placeholder": { color: "#bfbfbf" },
+  };
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setShowDropdown(false);
-    if (lang === "English") {
-      setSelectedFlag(<US className="w-6 h-auto" />);
-    } else if (lang === "Bangla") {
-      setSelectedFlag(<BD className="w-6 h-auto" />);
-    }
+    setSelectedFlag(lang === "English" ? <US className="w-6 h-auto" /> : <BD className="w-6 h-auto" />);
   };
 
   const handleClickOutside = (event) => {
@@ -42,30 +44,57 @@ const LoggingPage = () => {
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Custom CSS for placeholder color (Best Approach)
-  const customPlaceholderStyle = {
-    "::placeholder": {
-      color: "#bfbfbf", // Desired placeholder color
-    },
-    // For older browsers (optional, but good for compatibility):
-    ":-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
-    "::-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
+  const onFinish = async (values) => {
+    try {
+      // 1. Sign in with Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+
+      if (!user) {
+        message.error("Login failed. Please check your credentials.");
+        return;
+      }
+
+      // 2. Fetch user data from Realtime Database
+      const snapshot = await db.ref(`users/${user.uid}`).get();
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const accountType = userData.accountType;
+
+        // 3. Redirect based on accountType
+        if (accountType === "teacher") {
+          navigate("/teacher");
+        } else if (accountType === "admin") {
+          navigate("/admin");
+        } else if (accountType === "business") {
+          navigate("/business");
+        } else {
+          navigate("/"); // Default fallback
+        }
+      } else {
+        console.error("User data not found in database.");
+        message.error("Login failed. User data not found."); // Handle missing data
+      }
+      message.success("Logged in successfully!");
+
+    } catch (error) {
+      console.error("Login error:", error);
+      message.error(error.message);
+    }
   };
+    const onFinishFailed = (errorInfo) => {
+      console.log("Failed:", errorInfo);
+      message.error('Please fill in all the required fields correctly.')
+    };
 
   return (
-    <>
-      <section className="bg-[#f5f5f5] h-screen flex justify-center items-center relative">
+   <section className="bg-[#f5f5f5] h-screen flex justify-center items-center relative">
         <div>
           {/* Language Dropdown */}
           <div className="absolute top-2 right-4 flex items-center gap-6">
@@ -142,81 +171,51 @@ const LoggingPage = () => {
 
                 {/* login form */}
                 <div>
-                  <Form
-                    name="login"
-                    initialValues={{
-                      remember: true,
-                    }}
-                    style={{
-                      maxWidth: 360,
-                    }}
-                    onFinish={onFinish}
-                  >
-                    <Form.Item
-                      name="email"
-                      rules={[
-                        {
-                          type: "email",
-                          message: "The input is not a valid email!",
-                        },
-                        {
-                          required: true,
-                          message: "Please input your Email!",
-                        },
-                      ]}
-                    >
-                      <Input
-                        prefix={<MailOutlined className="text-[#545454]" />}
-                        placeholder="example@gmail.com"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          ...customPlaceholderStyle,
-                        }} // Combine styles
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Password!",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        prefix={<IoIosLock className="text-[#545454]" />}
-                        placeholder="Password"
-                        iconRender={(visible) =>
-                          visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                        }
-                        visibilityToggle={{
-                          visible: passwordVisible,
-                          onVisibleChange: setPasswordVisible,
-                        }}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          ...customPlaceholderStyle,
-                        }} // Combine styles
-                      />
-                    </Form.Item>
+           <Form
+              form={form}
+              name="login"
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed} // Add this
+              style={{ maxWidth: 360 }}
+              autoComplete="off"
+            >
+              <Form.Item
+                name="email"
+                rules={[
+                  { type: "email", message: "The input is not a valid email!" },
+                  { required: true, message: "Please input your Email!" },
+                ]}
+              >
+                <Input
+                  prefix={<MailOutlined className="text-[#545454]" />}
+                  placeholder="example@gmail.com"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  style={{ backgroundColor: "#f5f5f5", ...customPlaceholderStyle }}
+                />
+              </Form.Item>
 
-                    <Form.Item>
-                      <Button
-                        block
-                        type="primary"
-                        htmlType="submit"
-                        className="py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        style={{
-                          backgroundColor: "#038fde",
-                          borderColor: "#038fde",
-                        }} // Add style prop
-                      >
-                        Sign in
-                      </Button>
-                    </Form.Item>
-                  </Form>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your Password!" },
+                ]}
+              >
+                <Input.Password
+                  prefix={<IoIosLock className="text-[#545454]" />}
+                  placeholder="Password"
+                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                  visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  style={{ backgroundColor: "#f5f5f5", ...customPlaceholderStyle }}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Button block type="primary" htmlType="submit" className="py-2 px-4 rounded focus:outline-none focus:shadow-outline" style={{ backgroundColor: "#038fde", borderColor: "#038fde" }}>
+                  Sign in
+                </Button>
+              </Form.Item>
+            </Form>
                 </div>
 
                 <div className="mt-4 flex justify-between">
@@ -243,7 +242,6 @@ const LoggingPage = () => {
           </p>
         </div>
       </section>
-    </>
   );
 };
 

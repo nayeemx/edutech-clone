@@ -19,6 +19,9 @@ import AuthLayout from "./Layout/AuthLayout";
 import LoggingPage from './pages/LoggingPage/LoggingPage';
 import SignupPage from './pages/SignupPage/SignupPage';
 import ForgotPass from './pages/LoggingPage/ForgotPass';
+import Teacher from "./pages/Teacher/Teacher"; // Import
+import Admin from "./pages/Admin/Admin";       // Import
+import Business from "./pages/Business/Business";  // Import
 
 // Export the router!
 export const router = createBrowserRouter([
@@ -38,6 +41,9 @@ export const router = createBrowserRouter([
       { path: "pricing", element: <PricingPage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "eduai", element: <EduAi /> },
+      { path: "teacher", element: <Teacher /> },   // Add route
+    { path: "admin", element: <Admin /> },      // Add route
+    { path: "business", element: <Business /> }, // Add route
     ],
   },
   { path: "sentinal", element: <SentinalPage /> },

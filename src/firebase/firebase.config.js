@@ -1,11 +1,8 @@
+// firebase/firebase.config.js
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/database';
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -14,11 +11,10 @@ const firebaseConfig = {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  };
-// ################################################
+};
 
-// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export default app;
+export const auth = firebase.auth();
+export const db = firebase.database();
+export default firebase;

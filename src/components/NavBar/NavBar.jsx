@@ -1,3 +1,4 @@
+// src/components/NavBar/NavBar.jsx
 import { useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, Image } from "antd";
@@ -7,205 +8,238 @@ import Card1im2 from "../../assets/card1image2.png";
 import Card2im1 from "../../assets/card2im1.png";
 import Card2im2 from "../../assets/card2im2.png";
 import { MdWbSunny } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import star from "../../assets/eduai/star4.png";
+import { useAuth } from "../../provider/AuthProvider"; // Import useAuth
 
 const NavBar = () => {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isCard1Hovered, setIsCard1Hovered] = useState(false);
-  const [isCard2Hovered, setIsCard2Hovered] = useState(false); // New state for Card 2
+  const [isCard2Hovered, setIsCard2Hovered] = useState(false);
+  const { user, signOut } = useAuth(); // Get user and signOut
+  const navigate = useNavigate();     //for navigate after signout
+
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate("/") //go to home page
+      // Optionally, you could show a success message here using Ant Design's message API
+    } catch (error) {
+      console.error("Error signing out:", error);
+      // In a production app, display an error message to the user
+    }
+  };
 
   return (
     <>
       <div className="bg-gray-100 sticky top-0 z-50">
-      <div className="w-10/12 mx-auto p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <Link to="/">
-            <img src={Logo} alt="" className="w-32" />
-          </Link>
-        </div>
+        <div className="w-10/12 mx-auto p-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Link to="/">
+              <img src={Logo} alt="" className="w-32" />
+            </Link>
+          </div>
 
-        <div>
-          <ul className="flex space-x-4 text-[#313a52] font-semibold ml-auto">
-            <li className="relative">
-              <button
-                className="hover:text-blue-500"
-                onClick={() => setIsProductsOpen(!isProductsOpen)}
-                onMouseEnter={() => setIsProductsOpen(true)}
-              >
-                Products{" "}
-                <motion.svg
-                  className="inline-block h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  animate={{ rotate: isProductsOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
+          <div>
+            <ul className="flex space-x-4 text-[#313a52] font-semibold ml-auto">
+              <li className="relative">
+                <button
+                  className="hover:text-blue-500"
+                  onClick={() => setIsProductsOpen(!isProductsOpen)}
+                  onMouseEnter={() => setIsProductsOpen(true)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </motion.svg>
-              </button>
-
-              <AnimatePresence>
-                {isProductsOpen && (
-                  <motion.div
-                    className="absolute top-full left-0 w-fit bg-white border border-gray-200 rounded-xl shadow-lg mt-4"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                  Products{" "}
+                  <motion.svg
+                    className="inline-block h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    animate={{ rotate: isProductsOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
-                    onMouseLeave={() => setIsProductsOpen(false)}
                   >
-                    <div className="flex p-4 space-x-4">
-                      {/* 1st card */}
-                      <Link to="/sentinal">
-                        <Card
-                          hoverable
-                          style={{
-                            width: 300,
-                            height: 225,
-                            position: "relative",
-                          }}
-                          onMouseEnter={() => setIsCard1Hovered(true)}
-                          onMouseLeave={() => setIsCard1Hovered(false)}
-                        >
-                          <Suspense
-                            fallback={
-                              <div style={{ width: 200, height: 125 }}>
-                                Loading...
-                              </div>
-                            }
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </motion.svg>
+                </button>
+
+                <AnimatePresence>
+                  {isProductsOpen && (
+                    <motion.div
+                      className="absolute top-full left-0 w-fit bg-white border border-gray-200 rounded-xl shadow-lg mt-4"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      onMouseLeave={() => setIsProductsOpen(false)}
+                    >
+                      <div className="flex p-4 space-x-4">
+                        {/* 1st card */}
+                        <Link to="/sentinal">
+                          <Card
+                            hoverable
+                            style={{
+                              width: 300,
+                              height: 225,
+                              position: "relative",
+                            }}
+                            onMouseEnter={() => setIsCard1Hovered(true)}
+                            onMouseLeave={() => setIsCard1Hovered(false)}
                           >
-                            <Image
-                              preview={false}
-                              src={isCard1Hovered ? Card1im2 : Card1im1}
-                              width={"300px"} // Use percentage to fill the card width
-                              style={{
-                                position: "relative",
-                                width: "300px",
-                                height: "223.3px",
-                                backgroundColor: isCard1Hovered
-                                  ? "#f5faf6"
-                                  : "#e9f3ee", // Change background color on hover
-                                borderRadius: "3%",
-                                overflow: "hidden",
-                                bottom: "3.4vh",
-                                left: "-25px",
-                                transition: "background-color 0.3s ease", // Add a smooth transition
-                              }}
-                            />
-                          </Suspense>
+                            <Suspense
+                              fallback={
+                                <div style={{ width: 200, height: 125 }}>
+                                  Loading...
+                                </div>
+                              }
+                            >
+                              <Image
+                                preview={false}
+                                src={isCard1Hovered ? Card1im2 : Card1im1}
+                                width={"300px"} // Use percentage to fill the card width
+                                style={{
+                                  position: "relative",
+                                  width: "300px",
+                                  height: "223.3px",
+                                  backgroundColor: isCard1Hovered
+                                    ? "#f5faf6"
+                                    : "#e9f3ee", // Change background color on hover
+                                  borderRadius: "3%",
+                                  overflow: "hidden",
+                                  bottom: "3.4vh",
+                                  left: "-25px",
+                                  transition: "background-color 0.3s ease", // Add a smooth transition
+                                }}
+                              />
+                            </Suspense>
 
-                          {/* Add a semi-transparent background */}
-                          <div className="absolute top-0 left-0 w-full p-4 text-white">
-                            <h4 className="text-lg font-bold text-[#2eb263]">
-                              Sentinel
-                            </h4>
-                            <p className="text-sm text-[#505350]">
-                              Ensure student safety with entry/exit tracking
-                              with instant notification
-                            </p>
-                          </div>
-                        </Card>
-                      </Link>
+                            {/* Add a semi-transparent background */}
+                            <div className="absolute top-0 left-0 w-full p-4 text-white">
+                              <h4 className="text-lg font-bold text-[#2eb263]">
+                                Sentinel
+                              </h4>
+                              <p className="text-sm text-[#505350]">
+                                Ensure student safety with entry/exit tracking
+                                with instant notification
+                              </p>
+                            </div>
+                          </Card>
+                        </Link>
 
-                      {/* 2nd card */}
-                      <Link to="/sms" target="_blank">
-                        <Card
-                          hoverable
-                          style={{
-                            width: 300,
-                            height: 225,
-                            position: "relative",
-                            backgroundColor: isCard2Hovered
-                              ? "#f5faf6"
-                              : "#e9f3ee", // Change background color on hover
-                            transition: "background-color 0.3s ease", // Add a smooth transition
-                          }}
-                          onMouseEnter={() => setIsCard2Hovered(true)}
-                          onMouseLeave={() => setIsCard2Hovered(false)}
-                        >
-                          <Suspense
-                            fallback={
-                              <div style={{ width: 300, height: 125 }}>
-                                Loading...
-                              </div>
-                            }
+                        {/* 2nd card */}
+                        <Link to="/sms" target="_blank">
+                          <Card
+                            hoverable
+                            style={{
+                              width: 300,
+                              height: 225,
+                              position: "relative",
+                              backgroundColor: isCard2Hovered
+                                ? "#f5faf6"
+                                : "#e9f3ee", // Change background color on hover
+                              transition: "background-color 0.3s ease", // Add a smooth transition
+                            }}
+                            onMouseEnter={() => setIsCard2Hovered(true)}
+                            onMouseLeave={() => setIsCard2Hovered(false)}
                           >
-                            <Image
-                              preview={false}
-                              src={isCard2Hovered ? Card2im2 : Card2im1}
-                              width={"200px"} // Use percentage to fill the card width
-                              style={{
-                                position: "relative",
-                                width: "180px%",
-                                height: "94px",
-                                borderRadius: "3%",
-                                top: "15vh", // Adjust vertical position as needed
-                                left: "4.81vw",
-                                objectFit: "cover", // Ensure image covers the area
-                              }}
-                            />
-                          </Suspense>
+                            <Suspense
+                              fallback={
+                                <div style={{ width: 300, height: 125 }}>
+                                  Loading...
+                                </div>
+                              }
+                            >
+                              <Image
+                                preview={false}
+                                src={isCard2Hovered ? Card2im2 : Card2im1}
+                                width={"200px"} // Use percentage to fill the card width
+                                style={{
+                                  position: "relative",
+                                  width: "180px%",
+                                  height: "94px",
+                                  borderRadius: "3%",
+                                  top: "15vh", // Adjust vertical position as needed
+                                  left: "4.81vw",
+                                  objectFit: "cover", // Ensure image covers the area
+                                }}
+                              />
+                            </Suspense>
 
-                          {/* Add a semi-transparent background */}
-                          <div className="absolute top-0 left-0 w-full p-4 text-white">
-                            <h4 className="text-lg font-bold text-[#2eb263]">
-                              Bukl SMS Gateway
-                            </h4>
-                            <p className="text-sm text-[#505350]">
-                              Ensure student safety with entry/exit tracking
-                              with instant notification
-                            </p>
-                          </div>
-                        </Card>
-                      </Link>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </li>
-            <li className="hover:text-blue-500">
-              <Link to="/blog">Blog</Link>
-            </li>
-            <li className="hover:text-blue-500">
-              <Link to="/pricing">Pricing</Link>
-            </li>
-            <li className="hover:text-blue-500">
-              <Link to="/contact">Contact</Link>
-            </li>
-            <li className="hover:text-blue-500">
-              <Link to="/eduai">
-              <div className="flex items-center gap-2">
-              <p>Edutechs AI</p>
-              <img src={star} alt="" className="w-5 h-5" />
-              </div>
-              </Link>
-            </li>
-          </ul>
-        </div>
+                            {/* Add a semi-transparent background */}
+                            <div className="absolute top-0 left-0 w-full p-4 text-white">
+                              <h4 className="text-lg font-bold text-[#2eb263]">
+                                Bukl SMS Gateway
+                              </h4>
+                              <p className="text-sm text-[#505350]">
+                                Ensure student safety with entry/exit tracking
+                                with instant notification
+                              </p>
+                            </div>
+                          </Card>
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+              <li className="hover:text-blue-500">
+                <Link to="/blog">Blog</Link>
+              </li>
+              <li className="hover:text-blue-500">
+                <Link to="/pricing">Pricing</Link>
+              </li>
+              <li className="hover:text-blue-500">
+                <Link to="/contact">Contact</Link>
+              </li>
+              <li className="hover:text-blue-500">
+                <Link to="/eduai">
+                  <div className="flex items-center gap-2">
+                    <p>Edutechs AI</p>
+                    <img src={star} alt="" className="w-5 h-5" />
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        <div className="flex items-center space-x-4 gap-4">
-          <button className="text-[1.8rem]">
-            <MdWbSunny />
-          </button>
-          <Link to="/auth/login">
-            <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full border-2 border-blue-500 hover:bg-blue-200 text-blue-500 hover:text-blue-800">
-              <p className="relative top-[0.47vh]">Login</p>
+          <div className="flex items-center space-x-4 gap-4">
+            <button className="text-[1.8rem]">
+              <MdWbSunny />
             </button>
-          </Link>
-          <Link to="/auth/sign-up">
-            <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full bg-blue-500 hover:bg-blue-800 border-2 border-blue-500 hover:border-blue-800 text-white">
-              <p className="relative top-[0.54vh]">Sign Up</p>
-            </button>
-          </Link>
+
+            {/* Conditionally render based on user */}
+            {user ? (
+              <>
+                <span className="text-gray-600">
+                  Logged in as: {user.email}
+                </span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full bg-red-500 hover:bg-red-700 border-2 border-red-500 hover:border-red-700 text-white"
+                >
+                  <p className="relative">Logout</p>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth/login">
+                  <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full border-2 border-blue-500 hover:bg-blue-200 text-blue-500 hover:text-blue-800">
+                    <p className="relative">Login</p>
+                  </button>
+                </Link>
+                <Link to="/auth/sign-up">
+                  <button className="text-[1.4rem] cursor-pointer py-1 px-6 rounded-full bg-blue-500 hover:bg-blue-800 border-2 border-blue-500 hover:border-blue-800 text-white">
+                    <p className="relative">Sign Up</p>
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
-      </div>
       </div>
     </>
   );

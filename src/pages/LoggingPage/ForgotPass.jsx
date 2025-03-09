@@ -1,3 +1,5 @@
+// src/pages/LoggingPage/ForgotPass.jsx
+
 import { useState, useRef, useEffect } from "react";
 import { RiChat2Fill } from "react-icons/ri";
 import logo from "../../assets/logo-white.png";
@@ -6,29 +8,23 @@ import { BD, US } from "country-flag-icons/react/3x2";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoMdMailOpen } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa6";
-import { Button, Form, Input } from "antd"; // Keep Form, Input, Button
-import { Link } from "react-router-dom"; // Corrected import
+import { Button, Form, Input, message } from "antd"; // Import message
+import { Link } from "react-router-dom";
+import { auth } from "../../firebase/firebase.config"; // Import auth directly
+
 
 const ForgotPass = () => {
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-  };
-
   const [language, setLanguage] = useState("English");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedFlag, setSelectedFlag] = useState(
-    <US className="w-6 h-auto" />
-  );
+  const [selectedFlag, setSelectedFlag] = useState(<US className="w-6 h-auto" />);
   const dropdownRef = useRef(null);
+    const [form] = Form.useForm();
+
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setShowDropdown(false);
-    if (lang === "English") {
-      setSelectedFlag(<US className="w-6 h-auto" />);
-    } else if (lang === "Bangla") {
-      setSelectedFlag(<BD className="w-6 h-auto" />);
-    }
+    setSelectedFlag(lang === "English" ? <US className="w-6 h-auto" /> : <BD className="w-6 h-auto" />);
   };
 
   const handleClickOutside = (event) => {
@@ -39,28 +35,33 @@ const ForgotPass = () => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Custom CSS for placeholder color (Best Approach)
   const customPlaceholderStyle = {
-    "::placeholder": {
-      color: "#bfbfbf", // Desired placeholder color
-    },
-    // For older browsers (optional, but good for compatibility):
-    ":-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
-    "::-ms-input-placeholder": {
-      color: "#bfbfbf",
-    },
+    "::placeholder": { color: "#bfbfbf" },
+    ":-ms-input-placeholder": { color: "#bfbfbf" },
+    "::-ms-input-placeholder": { color: "#bfbfbf" },
   };
 
+  const onFinish = async (values) => {
+    try {
+      await auth.sendPasswordResetEmail(values.email); // Use Firebase's sendPasswordResetEmail
+      message.success("Password reset email sent!  Check your inbox.");
+        form.resetFields();
+    } catch (error) {
+      console.error("Password reset error:", error);
+      message.error(error.message); // Show user-friendly error
+    }
+  };
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+        message.error('Please enter a valid email')
+      };
+
   return (
-    <>
-      <section className="bg-[#f5f5f5] h-screen flex justify-center items-center relative">
+    // ... (Language dropdown and layout - NO CHANGES needed) ...
+    <section className="bg-[#f5f5f5] h-screen flex justify-center items-center relative">
         <div>
           {/* Language Dropdown */}
           <div className="absolute top-2 right-4 flex items-center gap-6">
@@ -138,46 +139,39 @@ const ForgotPass = () => {
                 </p>
                 {/*  form */}
                 <div>
-                  <Form
-                    name="forgotPassword" // Changed form name
-                    style={{
-                      maxWidth: 360,
-                    }}
-                    onFinish={onFinish}
-                  >
-                    <label className="text-[#3e416d] font-bold text-lg">
-                      Email
-                    </label>
-                    <Form.Item
-                      name="email"
-                      //Removed validation
-                    >
-                      <Input
-                        prefix={<IoMdMailOpen className="text-[#999999]" />}
-                        placeholder="example@gmail.com"
-                        className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          ...customPlaceholderStyle,
-                        }}
-                      />
-                    </Form.Item>
+            <Form
+                form={form}
+                name="forgotPassword"
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                style={{ maxWidth: 360 }}
+                autoComplete="off"
+            >
+              <label className="text-[#3e416d] font-bold text-lg">Email</label>
+              <Form.Item
+                name="email"
+                rules={[
+                    {
+                        type: "email",
+                        message: "The input is not a valid email!",
+                    },
+                { required: true, message: "Please input your Email!" },
+                ]}
+              >
+                <Input
+                  prefix={<IoMdMailOpen className="text-[#999999]" />}
+                  placeholder="example@gmail.com"
+                  className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  style={{ backgroundColor: "#f5f5f5", ...customPlaceholderStyle }}
+                />
+              </Form.Item>
 
-                    <Form.Item>
-                      <Button
-                        block
-                        type="primary"
-                        htmlType="submit"
-                        className="mt-[10vh] py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        style={{
-                          backgroundColor: "#038fde",
-                          borderColor: "#038fde",
-                        }}
-                      >
-                        Send {/* Changed Button Text */}
-                      </Button>
-                    </Form.Item>
-                  </Form>
+              <Form.Item>
+                <Button block type="primary" htmlType="submit" className="mt-[10vh] py-2 px-4 rounded focus:outline-none focus:shadow-outline" style={{ backgroundColor: "#038fde", borderColor: "#038fde" }}>
+                  Send
+                </Button>
+              </Form.Item>
+            </Form>
                 </div>
                 <div className="mt-4">
                   <Link to="/auth/login">
@@ -198,7 +192,6 @@ const ForgotPass = () => {
           </p>
         </div>
       </section>
-    </>
   );
 };
 
