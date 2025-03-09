@@ -1,11 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite'  // Assuming you have Tailwind set up as a Vite plugin
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),
-    tailwindcss(),
+  plugins: [
+    react(),
+    tailwindcss(), // Make sure your tailwind.config.js is correctly configured
   ],
-  base: '/', // Add this for clarity and potential subdirectory deployments
+  base: '/',  // Correct for root deployments.  Good!
+  server: {
+    port: 5173, // Good.  You can change this if needed.
+    hmr: {
+      // Let Vite handle host and protocol.  Essential for Firebase emulators.
+      // Don't add host, port, or protocol here.
+    },
+  },
 })
