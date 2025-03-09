@@ -20,15 +20,17 @@ const PricingPage = () => {
           <div className="grid grid-cols-2 w-8/12 mx-auto gap-4 my-14">
             {/* card1 */}
             <div className="border-[1px] border-b-gray-500 bg-white rounded-2xl p-6">
-              <div className="border-b-2 border-amber-600 pb-4 leading-[1.7]">
+              <div className="border-b-2 border-[#667] pb-4 leading-[1.7]">
                 <p className="text-[#676e80] text-lg font-bold">Lite</p>
                 <p className="text-[#67758f] text-sm font-semibold">Recommended for most institutions</p>
               </div>
 
-              <div className="border-b-2 border-amber-600 my-6 leading-[1.7]">
+              <div className="border-b-2 border-[#667]">
                 <div>
+                <div className="my-6">
                 <p className="text-6xl text-[#313a52] font-bold">৳0</p>
                 <p className="text-sm text-[#67758f]">Per student per month</p>
+                </div>
                 </div>
               </div>
 
@@ -93,22 +95,24 @@ const PricingPage = () => {
               </div>
 
               <button
-            className="w-full px-4 py-2 bg-[#038fde] border-2 border-[#038fde] relative top-[3.4vh] my-6 text-2xl font-semibold text-white rounded-full transition-transform duration-450 hover:translate-y-[-8px] hover:shadow-[#038fde] hover:shadow-lg"
+            className="w-full px-4 py-2 bg-[#038fde] border-2 border-[#038fde] relative my-6 text-2xl font-semibold text-white rounded-full transition-transform duration-450 hover:translate-y-[-8px] hover:shadow-[#038fde] hover:shadow-lg"
           >
             Start For Free
           </button>
             </div>
             {/* card2 */}
             <div className="border-[1px] border-b-gray-500 bg-white rounded-lg p-3">
-              <div className="border-b-2 border-amber-600 pb-4 leading-[1.7]">
+              <div className="border-b-2 border-[#667] pb-4 leading-[1.7]">
               <p className="text-blue-500 text-lg font-bold">Pro</p>
               <p className="text-[#67758f] text-sm font-semibold">For the advanced needs of large institutions</p>
               </div>
 
-              <div className="border-b-2 border-amber-600 my-6 leading-[1.7]">
+              <div className="border-b-2 border-[#667]">
                 <div>
+                <div className="my-6">
                 <p className="text-6xl text-[#313a52] font-bold">৳20</p>
                 <p className="text-sm text-[#67758f]">Per student per month</p>
+                </div>
                 </div>
               </div>
 
@@ -162,7 +166,7 @@ const PricingPage = () => {
               </div>
 
               <button
-            className="w-full px-4 py-2 bg-white my-6 text-2xl font-semibold text-[#038fde] rounded-full transition-transform duration-450 hover:translate-y-[-8px] hover:shadow-[#038fde] hover:shadow-lg border-2 border-[#038fde] relative top-[10.4vh]"
+            className="w-full px-4 py-2 bg-white my-6 text-2xl font-semibold text-[#038fde] rounded-full transition-transform duration-450 hover:translate-y-[-8px] hover:shadow-[#038fde] hover:shadow-lg border-2 border-[#038fde] relative top-[10.5vh]"
           >
             Upgrade
           </button>
@@ -198,9 +202,9 @@ const PricingPage = () => {
                 </h1>
               </div>
               <div className="">
-              <Link to="/signup">
+              <Link to="/auth/sign-up">
               <button className="text-blue-600 text-xl px-[5vw] py-4 rounded-4xl bg-white cursor-pointer">
-                <p className="relative top-[0.8vh]">Start For Free</p>
+                <p className="relative font-semibold">Start For Free</p>
               </button>
               </Link>
               </div>

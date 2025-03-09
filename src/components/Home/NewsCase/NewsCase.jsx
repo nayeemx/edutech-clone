@@ -152,7 +152,7 @@ const NewsCase = () => {
                 </h1>
               </div>
               <div className="">
-                <Link to="/login">
+                <Link to="/auth/login">
                 <button className="text-blue-600 px-[5vw] cursor-pointer py-4 rounded-4xl bg-white text-xl">
                   <p className="relative top-[0.64vh]">Start For Free</p>
                 </button>

@@ -510,9 +510,9 @@ const EduAi = () => {
               </h1>
             </div>
             <div className="">
-              <Link to="/signup">
+              <Link to="/auth/sign-up">
               <button className="text-blue-600 text-xl px-[5vw] py-4 rounded-4xl bg-white cursor-pointer">
-                <p className="relative top-[0.8vh]">Start For Free</p>
+                <p className="relative">Start For Free</p>
               </button>
               </Link>
             </div>

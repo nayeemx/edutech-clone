@@ -61,7 +61,7 @@ const Tables = () => {
                   <h4 className='text-xl text-[#67758f] font-semibold'>Lite</h4>
                   <p>৳0/student per month</p>
                   <button className='bg-[#038fde] text-white text-nowrap px-[4px] py-[8px] rounded-full w-[55%]'>
-                    <p className='relative top-[0.49vh]'>Start For Free</p>
+                    <p className='relative'>Start For Free</p>
                   </button>
                 </div>
               </th>
@@ -70,7 +70,7 @@ const Tables = () => {
                   <h4 className='text-xl text-[#2679fa] font-semibold'>Pro</h4>
                   <p>৳20/student per month</p>
                   <button className='text-[#2679fa] border-1 border-[#2679fa] px-[4px] py-[6px] rounded-full w-[35%]'>
-                    <p className='relative top-[0.49vh]'>Upgrade</p>
+                    <p className='relative'>Upgrade</p>
                   </button>
                 </div>
               </th>
