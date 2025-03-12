@@ -1,5 +1,5 @@
 // src/providers/AuthProvider.jsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { auth, db } from '../firebase/firebase.config';
 import { Spin } from 'antd';
 
@@ -19,14 +19,24 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const createUser = (email, password) => {
+  const createUser = (email, password, name, accountType, institutionName, phone) => { // Updated parameters
     setLoading(true);
     setError(null);
     return auth.createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         const user = userCredential.user;
-        setUser(user);
-        return user;
+        // WRITE USER DATA TO DATABASE (MATCHING YOUR STRUCTURE):
+        return db.ref(`users/${user.uid}`).set({
+          name: name,  // Use 'name', not 'displayName'
+          email: email,
+          accountType: accountType, // Use 'accountType', not 'role'
+          institutionName: institutionName, // Include other fields
+          phone: phone,
+          // photoURL: user.photoURL || null, // You don't have this yet.  Add later if needed.
+        }).then(() => {
+            setUser(user); // <-  Update the user state *after* successful database write.
+            return user;
+        });
       })
       .catch((error) => {
         setError(error);

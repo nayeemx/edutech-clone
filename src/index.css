@@ -1,5 +1,76 @@
-/* @import url('https://fonts.googleapis.com/css2?family=NTR&display=swap'); */
+/* index.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Yantramanav:wght@100;300;400;500;700;900&display=swap');
-/* @import url('https://fonts.cdnfonts.com/css/noir'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap'); */
-@import "tailwindcss";
+@import "tailwindcss";  /* Keep this if you're using other Tailwind classes */
+
+/* Custom Button Styles */
+.custom-button {
+  @apply relative text-white p-4 rounded-lg shadow flex items-center justify-start transition-colors duration-200; /* Apply common Tailwind classes */
+  /*  Keep other Tailwind base styles you want  */
+}
+
+/* Define the button variations using CSS classes */
+.btn-send-sms {
+  background-color: #9193d1;
+}
+.btn-send-sms:hover {
+  background-color: #7d7fbd;
+}
+
+.btn-notice-board {
+  background-color: #a54aef;
+}
+.btn-notice-board:hover {
+  background-color: #9136db;
+}
+
+.btn-accept-payment {
+  background-color: #48c4cc;
+}
+.btn-accept-payment:hover {
+  background-color: #34b0b8;
+}
+
+.btn-payment-summary {
+  background-color: #f47e85;
+}
+.btn-payment-summary:hover {
+  background-color: #e06a71;
+}
+
+.btn-take-roll {
+  background-color: #fcae66;
+}
+.btn-take-roll:hover{
+    background-color: #e89a52;
+}
+
+.btn-attendance-summary {
+    background-color: #6dc98b;
+}
+.btn-attendance-summary:hover {
+    background-color: #59b577;
+}
+
+
+/* ... Add styles for other buttons similarly ... */
+
+/* Add this to handle the arrow icon hover effect (if you still want it) */
+.custom-button .arrow-icon-container {
+    @apply absolute right-0 top-0 h-full w-12 flex items-center justify-center rounded-r-lg;
+}
+
+.custom-button .arrow-icon-container .overlay {
+   @apply absolute inset-0 bg-white opacity-0 rounded-l-full transition-opacity duration-200;
+}
+
+.custom-button:hover .arrow-icon-container .overlay{
+    @apply opacity-20;
+}
+.custom-button .arrow-icon {
+  @apply text-xl hidden relative z-10; /* Initially hidden */
+}
+
+.custom-button:hover .arrow-icon {
+  @apply block; /* Show on hover */
+}

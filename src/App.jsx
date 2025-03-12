@@ -41,9 +41,6 @@ export const router = createBrowserRouter([
       { path: "pricing", element: <PricingPage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "eduai", element: <EduAi /> },
-      { path: "teacher", element: <Teacher /> },   // Add route
-    { path: "admin", element: <Admin /> },      // Add route
-    { path: "business", element: <Business /> }, // Add route
     ],
   },
   { path: "sentinal", element: <SentinalPage /> },
@@ -54,6 +51,9 @@ export const router = createBrowserRouter([
       { path: "/auth/sign-up", element: <SignupPage /> },
       { path: "/auth/forgotPass", element: <ForgotPass /> },
     ] ,
-   },
+  },
+  { path: "teacher", element: <Teacher /> },   // Add route
+  { path: "admin", element: <Admin /> },      // Add route
+  { path: "business", element: <Business /> }, // Add route
   { path: "*", element: <NotfoundPage /> }, // Put the wildcard route LAST
 ]);
