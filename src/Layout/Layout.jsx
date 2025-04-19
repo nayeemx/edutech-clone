@@ -27,6 +27,7 @@ const Layout = () => {
       "/auth/login": "Edutechs || Login",
       "/auth/sign-up": "Edutechs || Sign Up",
       "/auth/forgotPass": "Edutechs || Forgot Password",
+      "/teacher": "Edutechs || Teacher",
     };
 
     document.title = titleMap[location.pathname] || "Edutechs"; // Default title

@@ -7,17 +7,24 @@ import SideBar from "../../components/TeacherComponent/SideBar";
 import MainContent from "../../components/TeacherComponent/MainContent";
 import HeaderRight from "../../components/TeacherComponent/HeaderRight";
 import { Link } from "react-router";
+import LandingPage from "../../components/TeacherComponent/LandingPage"; // Import the LandingPage component
+
 
 const Teacher = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const { user } = useAuth();
+  const [showLandingPage, setShowLandingPage] = useState(true); // State to control LandingPage visibility
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
+    // Check if the "hideOnboarding" flag is set in localStorage
+    const hideOnboarding = localStorage.getItem("hideOnboarding") === "true";
+    setShowLandingPage(!hideOnboarding); // Show if not hidden
+
     if (user) {
       const userRef = db.ref(`users/${user.uid}`); // Correct path to user data
       userRef.on("value", (snapshot) => {
@@ -32,6 +39,9 @@ const Teacher = () => {
 
   return (
     <>
+      {/* Conditionally render the LandingPage */}
+      {showLandingPage && <LandingPage />}
+
       <section>
         {/* header */}
         <div className="h-20 w-full flex justify-between items-center">

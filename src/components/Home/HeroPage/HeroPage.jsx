@@ -4,8 +4,6 @@ import Student from "../../../assets/student_badge.png";
 import Parents from "../../../assets/parent_badge.png";
 import Admin from "../../../assets/school_leader_badge.png";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
-// CORRECT: Use the custom hook!
-import { useAuth } from "../../../provider/AuthProvider";
 
 const HeroPage = () => {
   const renderStars = (rating) => {
@@ -39,22 +37,10 @@ const HeroPage = () => {
 
   const rating = 4.6;
 
-  // Use the custom hook!  It handles the loading state correctly.
-  const { user, loading } = useAuth();
-
-  // IMPORTANT: Check the loading state!
-  if (loading) {
-    return <div>Loading user data...</div>; // Or a spinner
-  }
-
 
   return (
     <>
       <div className="w-8/12 mx-auto mt-10 text-lg">
-          {/* Conditional rendering: Only show if user exists */}
-          <p>{user ? `Welcome, ${user.email}` : "Not logged in"}</p>  {/* Show email (more common) */}
-        {/* ... rest of your HeroPage content ... */}
-
         <h1 className="text-[4rem] text-[#313a52] w-11/12 justify-self-center font-wrap font-bold text-center leading-[1.2]">
           Bringing Classrooms Together with Technology
         </h1>
