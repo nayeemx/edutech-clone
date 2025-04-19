@@ -104,29 +104,46 @@ const Tasks = ({ onEdit, onDelete }) => {
                     {/* Header */}
                     <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
-                            {task.pin ? (
-                                <BsPinAngleFill className="text-blue-500" />
-                            ) : (
-                                <BsPinAngleFill className="text-gray-400" />
-                            )}
-
                             <div className="w-[15vw] flex justify-between items-center">
                                 <h3 className="text-lg font-semibold">{task.title}</h3>
 
-                                {/* badge */}
-                                <div>
-                                    {task.priority && (
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs ${task.priority === "high"
+                                <div className="flex items-center gap-2">
+                                    {/* pin */}
+                                    <div>
+                                        {task.pin ? (
+                                            <BsPinAngleFill className="text-blue-500" />
+                                        ) : (
+                                            <BsPinAngleFill className="text-gray-400" />
+                                        )}
+                                    </div>
+                                    {/* badge */}
+                                    <div>
+                                        {task.priority && (
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs ${task.priority === "high"
                                                     ? "bg-red-200 text-red-800"
                                                     : task.priority === "medium"
                                                         ? "bg-yellow-200 text-yellow-800"
                                                         : "bg-green-200 text-green-800"
-                                                }`}
-                                        >
-                                            {task.priority}
-                                        </span>
-                                    )}
+                                                    }`}
+                                            >
+                                                {task.priority}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Mark All icon only */}
+                                    <div className="">
+                                        <BsCheckAll
+                                            size={20}
+                                            className="cursor-pointer mr-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleToggleAll(task.id, task.Task);
+                                            }}
+                                        />
+                                        {/* <span className="text-sm">Mark All</span> */}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,19 +158,6 @@ const Tasks = ({ onEdit, onDelete }) => {
 
                     {/* Mark All & Subtasks */}
                     <div className="ml-4 space-y-2">
-                        {/* Mark All icon only */}
-                        <div className="flex items-center gap-2 mb-2">
-                            <BsCheckAll
-                                size={20}
-                                className="cursor-pointer mr-2"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleToggleAll(task.id, task.Task);
-                                }}
-                            />
-                            <span className="text-sm">Mark All</span>
-                        </div>
-
                         {/* Individual sub‑tasks */}
                         {task.Task?.map((sub, idx) => (
                             <div
@@ -185,7 +189,7 @@ const Tasks = ({ onEdit, onDelete }) => {
                         {/* Progress Bar */}
                         <div className="flex flex-col w-10/12">
                             <div className="flex items-center gap-2 w-full">
-                                <span className="w-full">bokbok</span>
+                                <span className="w-full">Progress</span>
                                 <span className="w-full text-end text-blue-500">{getProgress(task.Task)}%</span>
                             </div>
                             <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
