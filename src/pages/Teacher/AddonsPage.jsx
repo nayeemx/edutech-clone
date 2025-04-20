@@ -103,7 +103,7 @@ const Teacher = () => {
           </div>
           {/* data */}
 
-          <section className="w-[76%] absolute left-[20vw] h-[calc(100vh-5rem)] overflow-y-auto transition-all duration-300">
+          <section className="w-[76%] absolute left-[20vw] h-[calc(92vh-5rem)] overflow-y-auto transition-all duration-300">
             <ToDo />
           </section>
 
