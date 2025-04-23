@@ -115,15 +115,15 @@ const TodoReport = () => {
 
     return (
         <div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* 🔸 Task Status Pie Chart */}
-                <div className="bg-white rounded-2xl shadow p-4">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4">
                     <h3 className="text-center font-semibold mb-4">Task Status</h3>
                     <div ref={pieChartRef} style={{ height: 250 }} />
                 </div>
 
                 {/* 🔸 Priority Breakdown Block */}
-                <div className="bg-white rounded-2xl shadow p-4">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4">
                     <h3 className="text-center font-semibold mb-4">Priority Breakdown</h3>
                     <div className="space-y-4 relative top-[18%]">
                         {["high", "medium", "low"].map((level) => (
@@ -147,7 +147,7 @@ const TodoReport = () => {
                 </div>
 
                 {/* 🔸 Upcoming Deadlines */}
-                <div className="bg-white rounded-2xl shadow p-4">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4">
                     <h3 className="text-center font-semibold mb-4">📅 Upcoming Deadlines</h3>
                     <ul className="divide-y divide-gray-200 max-h-[250px] overflow-y-auto">
                         {getUpcomingDeadlines().length === 0 ? (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   HiHome,
   HiOutlineHome,
@@ -9,20 +9,29 @@ import {
   HiCog6Tooth,
   HiWrenchScrewdriver,
 } from 'react-icons/hi2';
-import { NavLink } from 'react-router-dom'; // Import NavLink from react-router-dom
+import { NavLink, useLocation } from 'react-router-dom';
 
 const SideBar = ({ isSidebarOpen }) => {
+  const location = useLocation();
   const [activeMenu, setActiveMenu] = useState('Dashboard');
 
   const menuItems = [
-    { name: 'Dashboard', icon: <HiOutlineHome />, activeIcon: <HiHome /> },
+    { name: 'Dashboard', icon: <HiOutlineHome />, activeIcon: <HiHome />, path: '/teacher' },
     { name: 'Classrooms', icon: <HiSquares2X2 />, activeIcon: <HiSquares2X2 /> },
     { name: 'Students', icon: <HiUserGroup />, activeIcon: <HiUserGroup /> },
     { name: 'Timetable', icon: <HiCalendarDays />, activeIcon: <HiCalendarDays /> },
     { name: 'Billing & Recharge', icon: <HiChatBubbleOvalLeftEllipsis />, activeIcon: <HiChatBubbleOvalLeftEllipsis /> },
     { name: 'Settings', icon: <HiCog6Tooth />, activeIcon: <HiCog6Tooth /> },
-    { name: 'Add-Ons', icon: <HiWrenchScrewdriver />, activeIcon: <HiWrenchScrewdriver />, path: '/addons' }, // Add a path for "Add-Ons"
+    { name: 'Add-Ons', icon: <HiWrenchScrewdriver />, activeIcon: <HiWrenchScrewdriver />, path: '/addons' },
   ];
+
+  useEffect(() => {
+    // Sync active menu based on current path
+    const matchedItem = menuItems.find(item => item.path && location.pathname.startsWith(item.path));
+    if (matchedItem) {
+      setActiveMenu(matchedItem.name);
+    }
+  }, [location.pathname]);
 
   const handleMenuClick = (menuName) => {
     setActiveMenu(menuName);
@@ -30,67 +39,49 @@ const SideBar = ({ isSidebarOpen }) => {
 
   return (
     <div
-      className={`bg-white text-gray-700 h-full border-r border-gray-300 transition-all duration-300 mt-6 ${
-        isSidebarOpen ? 'w-[4.8vw]' : 'w-64' // Reversed: Now w-16 when open, w-64 when closed
+      className={`bg-white text-gray-700 h-full transition-all duration-300 mt-6 ${
+        isSidebarOpen ? 'w-[4.7vw]' : 'w-[16.9vw]'
       }`}
     >
       <ul className="flex flex-col">
         {menuItems.map((item) => {
-          // Check if the menu item is "Add-Ons"
-          if (item.name === 'Add-Ons') {
+          const isActive = activeMenu === item.name;
+
+          const commonClasses = `flex items-center h-[7vh] cursor-pointer ${
+            isActive ? 'bg-sky-100 text-blue-600' : 'hover:bg-gray-100 text-gray-700'
+          } ${isSidebarOpen ? 'justify-center' : 'px-4'}`;
+
+          const iconEl = (
+            <span className={`text-xl ${isSidebarOpen ? '' : 'mx-3'}`}>
+              {isActive ? item.activeIcon : item.icon}
+            </span>
+          );
+
+          const labelEl = !isSidebarOpen && <span>{item.name}</span>;
+
+          if (item.path) {
             return (
-              <li
-                key={item.name}
-                className={`flex items-center h-14 cursor-pointer ${
-                  activeMenu === item.name
-                    ? 'bg-sky-100 text-blue-600'
-                    : 'hover:bg-gray-100 text-gray-700'
-                } ${isSidebarOpen ? 'justify-center' : ''}`} // Reversed: justify-center when open
-              >
-                {/* Use NavLink for "Add-Ons" */}
+              <li key={item.name}>
                 <NavLink
-                  to={item.path} // Link to the specified path
-                  className={({ isActive }) =>
-                    `flex items-center w-full h-full ${
-                      isActive
-                        ? 'bg-sky-100 text-blue-600'
-                        : 'hover:bg-gray-100 text-gray-700'
-                    } ${isSidebarOpen ? 'justify-center' : ''}`
-                  }
+                  to={item.path}
                   onClick={() => handleMenuClick(item.name)}
+                  className={commonClasses}
                 >
-                  <span
-                    className={`text-xl ${
-                      isSidebarOpen ? '' : 'mr-3' // Reversed: mr-3 when closed
-                    }`}
-                  >
-                    {activeMenu === item.name ? item.activeIcon : item.icon}
-                  </span>
-                  {!isSidebarOpen && <span>{item.name}</span>} {/* Reversed: Show text when closed */}
+                  {iconEl}name
+                  {labelEl}
                 </NavLink>
               </li>
             );
           }
 
-          // Render other menu items as before
           return (
             <li
               key={item.name}
-              className={`flex items-center h-14 cursor-pointer ${
-                activeMenu === item.name
-                  ? 'bg-sky-100 text-blue-600'
-                  : 'hover:bg-gray-100 text-gray-700'
-              } ${isSidebarOpen ? 'justify-center' : ''}`} // Reversed: justify-center when open
               onClick={() => handleMenuClick(item.name)}
+              className={commonClasses}
             >
-              <span
-                className={`text-xl ${
-                  isSidebarOpen ? '' : 'mr-3' // Reversed: mr-3 when closed
-                }`}
-              >
-                {activeMenu === item.name ? item.activeIcon : item.icon}
-              </span>
-              {!isSidebarOpen && <span>{item.name}</span>} {/* Reversed: Show text when closed */}
+              {iconEl}
+              {labelEl}
             </li>
           );
         })}

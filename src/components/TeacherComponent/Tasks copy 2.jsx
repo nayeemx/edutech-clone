@@ -8,14 +8,10 @@ import {
     BsCheckAll,
 } from "react-icons/bs";
 import { IoColorPaletteSharp } from "react-icons/io5";
-import { FaTrashCan, FaRankingStar } from "react-icons/fa6";
-import { BsThreeDotsVertical } from "react-icons/bs"; // import this at top
-// import TodoReport1 from "./TodoReport";
-import TodoReport from "../../components/TeacherComponent/TodoReport";
+import { FaTrashCan } from "react-icons/fa6";
 
 const Tasks = ({ onEdit, onDelete }) => {
     const [tasks, setTasks] = useState([]);
-    const [dropdownOpenId, setDropdownOpenId] = useState(null);
 
     // Subscribe to Firebase and load tasks
     useEffect(() => {
@@ -190,36 +186,20 @@ const Tasks = ({ onEdit, onDelete }) => {
         });
     };
 
-    useEffect(() => {
-        const handleClickOutside = () => {
-            setDropdownOpenId(null);
-            setOpenPriorityDropdownId(null);
-            setOpenColorDropdownId(null);
-        };
-
-        window.addEventListener("click", handleClickOutside);
-        return () => {
-            window.removeEventListener("click", handleClickOutside);
-        };
-    }, []);
-
     return (
         <>
-            <div>
-                <TodoReport />
-            </div>
-            <section className="flex gap-4 py-10 border-t-2 border-gray-200">
+            <section className="flex gap-4 my-4 pt-4 border-t-2 border-gray-200">
                 {/* Search Input */}
                 <input
                     type="text"
                     placeholder="Search tasks..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border rounded w-full px-2 mb-2"
+                    className="p-2 border rounded mb-4 w-full"
                 />
 
                 {/* Filters */}
-                <div className="flex gap-4 mb-2.5">
+                <div className="flex gap-4 mb-4">
                     {/* Priority Filter */}
                     <select
                         value={selectedPriority}
@@ -246,7 +226,7 @@ const Tasks = ({ onEdit, onDelete }) => {
                 </div>
             </section>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {getFilteredTasks().map((task) => (
                     <div
                         key={task.id}
@@ -355,7 +335,7 @@ const Tasks = ({ onEdit, onDelete }) => {
                                             checked={sub.completed}
                                             onChange={(e) => handleToggleOne(task.id, idx, e.target.checked)}
                                             className={
-                                                sub.isSubtask ? "mr-6 cursor-pointer relative left-[0.6vw]" : "mr-4 cursor-pointer"
+                                                sub.isSubtask ? "mr-8 cursor-pointer" : "mr-4 cursor-pointer"
                                             }
                                         />
                                         <span
@@ -369,7 +349,7 @@ const Tasks = ({ onEdit, onDelete }) => {
                         </div>
 
                         {/* bottom part */}
-                        <div className="flex items-center justify-between w-full mt-4 pt-2 border-t-2 relative">
+                        <div className="flex items-center justify-between w-full mt-4 pt-2 border-t-2">
                             {/* Progress Bar */}
                             <div className="flex flex-col w-10/12">
                                 <div className="flex items-center gap-2 w-full">
@@ -386,100 +366,46 @@ const Tasks = ({ onEdit, onDelete }) => {
                                     />
                                 </div>
                             </div>
-
-                            {/* 3-dot menu */}
-                            <div className="relative">
+                            {/* Delete Task */}
+                            <div className="border-t border-gray-100">
                                 <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setDropdownOpenId((prev) => (prev === task.id ? null : task.id));
-                                    }}
-                                    className="p-1 text-gray-600 hover:text-black"
+                                    onClick={(e) => { onDelete(task.id, e); setDropdownOpenId(null); }} // Pass event 'e'
+                                    className="block w-full text-left py-2 px-4 text-sm text-red-600 hover:bg-red-50"
                                 >
-                                    <BsThreeDotsVertical size={20} />
+                                    <FaTrashCan size={20} />
                                 </button>
+                            </div>
 
-                                {dropdownOpenId === task.id && (
-                                    <div
-                                        className="absolute right-[0.6vw] bottom-[3.5vh] bg-white border rounded shadow z-20 w-[2.4vw]"
-                                        onClick={(e) => e.stopPropagation()} // prevent click bubbling
-                                    >
-                                        {/* Priority button (same one already used) */}
-                                        <div className="p-2">
+                            {/* select color */}
+                            <div className="relative w-[1.5vw] h-[3.5vh]">
+                                <button
+                                    onClick={(e) => toggleColorDropdown(e, task.id)}
+                                    className="text-gray-700 hover:text-gray-900 text-[1.28rem] relative top-[0.9vh]"
+                                >
+                                    <IoColorPaletteSharp />
+                                </button>
+                                {openColorDropdownId === task.id && (
+                                    <div className="bg-white border rounded shadow z-10 w-[8.2vw] h-[24vh] overflow-y-scroll absolute bottom-[3vh] right-[0.4vw]">
+                                        {[
+                                            { name: "Red", value: "lightpink" },
+                                            { name: "Yellow", value: "lightyellow" },
+                                            { name: "Green", value: "lightgreen" },
+                                            { name: "Blue", value: "powderblue" },
+                                            { name: "Steel Blue", value: "lightsteelblue" },
+                                            { name: "Gray", value: "lightgray" },
+                                        ].map((color) => (
                                             <button
-                                                onClick={(e) => togglePriorityDropdown(e, task.id)}
-                                                className={`w-full text-left p-2 rounded text-sm ${task.priority === "high"
-                                                    ? "bg-red-200 text-red-800"
-                                                    : task.priority === "medium"
-                                                        ? "bg-yellow-200 text-yellow-800"
-                                                        : "bg-green-200 text-green-800"
-                                                    }`}
+                                                key={color.value}
+                                                onClick={(e) => handleColorChange(e, task.id, color.value)}
+                                                className="w-full text-left px-4 py-2 text-sm bg-gray-100 hover:bg-gray-300 flex items-center gap-2"
                                             >
-                                                <FaRankingStar />
+                                                <span
+                                                    className="inline-block w-4 h-4 mr-2 rounded-full"
+                                                    style={{ backgroundColor: color.value }}
+                                                ></span>
+                                                <span>{color.name}</span>
                                             </button>
-                                            {openPriorityDropdownId === task.id && (
-                                                <div className="mt-1 bg-white border rounded shadow z-10 absolute right-[2vw] bottom-[10.4vh]">
-                                                    {["high", "medium", "low"].map((level) => (
-                                                        <button
-                                                            key={level}
-                                                            onClick={(e) => handlePriorityChange(e, task.id, level)}
-                                                            className={`block px-4 py-2 text-sm w-full text-left ${level === "high"
-                                                                ? "hover:bg-red-100 rounded-t-sm"
-                                                                : level === "medium"
-                                                                    ? "hover:bg-yellow-100"
-                                                                    : "hover:bg-green-100 rounded-b-sm"
-                                                                }`}
-                                                        >
-                                                            {level.charAt(0).toUpperCase() + level.slice(1)}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Color picker button (same one already used) */}
-                                        <div className="p-2">
-                                            <button
-                                                onClick={(e) => toggleColorDropdown(e, task.id)}
-                                                className="w-full text-left px-2 p-2 rounded text-sm bg-gray-200 hover:bg-gray-300"
-                                            >
-                                                <IoColorPaletteSharp />
-                                            </button>
-                                            {openColorDropdownId === task.id && (
-                                                <div className="mt-1 bg-white border rounded shadow z-10 max-h-[150px] overflow-y-scroll absolute right-[2vw] bottom-[5vh]">
-                                                    {[
-                                                        { name: "Red", value: "lightpink" },
-                                                        { name: "Yellow", value: "lightyellow" },
-                                                        { name: "Green", value: "lightgreen" },
-                                                        { name: "Blue", value: "powderblue" },
-                                                        { name: "Steel Blue", value: "lightsteelblue" },
-                                                        { name: "Gray", value: "lightgray" },
-                                                    ].map((color) => (
-                                                        <button
-                                                            key={color.value}
-                                                            onClick={(e) => handleColorChange(e, task.id, color.value)}
-                                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 flex items-center gap-2"
-                                                        >
-                                                            <span
-                                                                className="inline-block w-4 h-4 rounded-full"
-                                                                style={{ backgroundColor: color.value }}
-                                                            ></span>
-                                                            {color.name}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Delete button (same one already used) */}
-                                        <div className="border-t border-gray-300">
-                                            <button
-                                                onClick={(e) => { onDelete(task.id, e); setDropdownOpenId(null); }}
-                                                className="w-full py-2 px-2 text-center text-sm text-red-600 hover:bg-red-50"
-                                            >
-                                                <FaTrashCan className="inline text-center" />
-                                            </button>
-                                        </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>

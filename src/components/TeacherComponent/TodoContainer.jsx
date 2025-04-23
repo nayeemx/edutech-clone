@@ -4,27 +4,24 @@ import Logo from "../../assets/teacher/logo-white.png";
 import { useAuth } from "../../provider/AuthProvider"; // Double-check this path!
 import { db } from "../../firebase/firebase.config";
 import SideBar from "../../components/TeacherComponent/SideBar";
-import MainContent from "../../components/TeacherComponent/MainContent";
 import HeaderRight from "../../components/TeacherComponent/HeaderRight";
 import { Link } from "react-router";
-import LandingPage from "../../components/TeacherComponent/LandingPage"; // Import the LandingPage component
+import { FaClipboardList } from "react-icons/fa";
+import { SiTodoist } from "react-icons/si";
+import { RiChat2Fill } from "react-icons/ri";
+import ToDo from "./ToDo";
 
 
-const Teacher = () => {
+const AddonsPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const { user } = useAuth();
-  const [showLandingPage, setShowLandingPage] = useState(true); // State to control LandingPage visibility
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
-    // Check if the "hideOnboarding" flag is set in localStorage
-    const hideOnboarding = localStorage.getItem("hideOnboarding") === "true";
-    setShowLandingPage(!hideOnboarding); // Show if not hidden
-
     if (user) {
       const userRef = db.ref(`users/${user.uid}`); // Correct path to user data
       userRef.on("value", (snapshot) => {
@@ -39,9 +36,6 @@ const Teacher = () => {
 
   return (
     <>
-      {/* Conditionally render the LandingPage */}
-      {showLandingPage && <LandingPage />}
-
       <section>
         {/* header */}
         <div className="h-20 w-full flex justify-between items-center">
@@ -75,7 +69,7 @@ const Teacher = () => {
                 <section>
                   <div className={`${isSidebarOpen ? "w-[4.7vw]" : "w-[16.9vw]"} transition-all duration-300`}>
                     <div className={`h-20 ${isSidebarOpen ? "hidden" : "w-[16.9vw] flex items-center gap-2"} relative left-[1vw] transition-all duration-300`}>
-                      <div className="rounded-full h-12 w-[4.5vw] bg-gray-300 flex items-center justify-center">
+                      <div className="rounded-full h-[7vh] w-[3vw] bg-gray-300 flex items-center justify-center">
                         {/* Assuming you don't have photoURL, use default avatar */}
                         <RiUserFill className="h-8 w-8 text-gray-600" />
                       </div>
@@ -94,13 +88,25 @@ const Teacher = () => {
             )}
           </div>
           {/* data */}
-          <div className={`${isSidebarOpen ? "w-[100vw]" : "w-[82.4%]"} h-[calc(100vh-5rem)] overflow-y-auto transition-all duration-300`}>
-            <MainContent />
+          <div className={`${isSidebarOpen ? "w-[100vw]" : "w-[82.4%]"} h-[84.4vh] overflow-y-auto transition-all duration-300`}>
+            {/* addons part */}
+            <ToDo />
           </div>
         </div>
       </section>
+
+      <section className="bg-white absolute bottom-0 left-0 p-[1rem] font-medium w-full text-center border-t-2 border-gray-200">
+        <p>Copyright Edutechs © 2025 Teacher V69.60</p>
+      </section>
+
+      {/* Chat Icon */}
+      <div>
+        <p className="fixed right-[1.4vw] top-[39rem] bg-blue-500 p-[10px] w-[4vw] h-[8.6vh] z-10 rounded-full">
+          <RiChat2Fill className="text-white text-4xl -rotate-[9deg] relative top-[0.4vh] left-[0.3vw]" />
+        </p>
+      </div>
     </>
   );
 };
 
-export default Teacher;
+export default AddonsPage;

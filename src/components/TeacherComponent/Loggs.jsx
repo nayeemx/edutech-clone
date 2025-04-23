@@ -1,20 +1,17 @@
 import { useState, useEffect } from "react";
-import { RiMenuFold4Fill, RiMenuUnfold4Fill, RiUserFill } from "react-icons/ri";
+import { RiMenuFold4Fill, RiMenuUnfold4Fill, RiUserFill, RiChat2Fill } from "react-icons/ri";
 import Logo from "../../assets/teacher/logo-white.png";
 import { useAuth } from "../../provider/AuthProvider"; // Double-check this path!
 import { db } from "../../firebase/firebase.config";
 import SideBar from "../../components/TeacherComponent/SideBar";
 import HeaderRight from "../../components/TeacherComponent/HeaderRight";
 import { Link } from "react-router";
-import { FaClipboardList } from "react-icons/fa";
-import { SiTodoist } from "react-icons/si";
-import { RiChat2Fill } from "react-icons/ri";
 
-
-const AddonsPage = () => {
+const Loggs = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const { user } = useAuth();
+  const [logs, setLogs] = useState([]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -32,6 +29,41 @@ const AddonsPage = () => {
       setUserData(null);
     }
   }, [user]);
+
+  // to show logss
+  useEffect(() => {
+    const fetchLogs = async () => {
+      const usersSnapshot = await db.ref("users").once("value");
+      const usersData = usersSnapshot.val();
+
+      const logsArray = [];
+
+      if (usersData) {
+        const userEntries = Object.entries(usersData);
+
+        for (const [uid, userInfo] of userEntries) {
+          const tasksSnapshot = await db.ref(`tasks/${uid}`).once("value");
+          const tasksData = tasksSnapshot.val();
+
+          if (tasksData) {
+            Object.entries(tasksData).forEach(([taskId, task]) => {
+              logsArray.push({
+                userName: userInfo.name || "Unknown",
+                priority: task.priority || "N/A",
+                taskTitle: task.title || "Untitled",
+                createdAt: task.created_at || "N/A",
+                updatedAt: task.updated_at || "N/A",
+              });
+            });
+          }
+        }
+      }
+
+      setLogs(logsArray);
+    };
+
+    fetchLogs();
+  }, []);
 
   return (
     <>
@@ -89,41 +121,44 @@ const AddonsPage = () => {
           {/* data */}
           <div className={`${isSidebarOpen ? "w-[100vw]" : "w-[82.4%]"} 
           h-[calc(100vh-5rem)] overflow-y-auto transition-all duration-300`}>
-            {/* addons part */}
-            <div className="flex items-center gap-4">
-
-              {/* <ToDo /> */}
-              <div className="w-[25vw] h-[25vh] bg-blue-500 rounded-2xl shadow-lg p-6">
-                <div className="gap-6 text-white">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span><SiTodoist className="text-[3.6rem]" /></span>
-                    <p className="text-4xl font-medium">Todo</p>
-                  </div>
-                  <p>Click to see the logs information of users</p>
-                  <Link to="/todo">
-                    <div className="flex justify-end">
-                      <p className="text-lg font-semibold text-center my-2 bg-white text-blue-600 rounded-xl shadow hover:bg-blue-100 transition px-4">Open</p>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-
-              {/* logs */}
-              <div className="w-[25vw] h-[25vh] bg-blue-500 rounded-2xl shadow-lg p-6">
-                <div className="gap-6 text-white">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span><FaClipboardList className="text-[3.6rem]" /></span>
-                    <p className="text-4xl font-medium">Logs</p>
-                  </div>
-                  <p>Click to see the logs information of users</p>
-                  <Link to="/loggs">
-                    <div className="flex justify-end">
-                      <p className="text-lg font-semibold text-center my-2 bg-white text-blue-600 rounded-xl shadow hover:bg-blue-100 transition px-4">Open</p>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            {/* Logs Table Section */}
+        <section className="w-[76%] absolute left-[20vw] h-[calc(92vh-5rem)] transition-all duration-300 p-4">
+          <h2 className="text-xl font-bold mb-4">Logs</h2>
+          <div className="bg-white rounded shadow h-[58vh] overflow-y-auto">
+            <table className="min-w-full table-auto border-collapse border border-gray-200 text-left">
+              <thead>
+                <tr className="bg-gray-100 text-sm text-gray-700">
+                  <th className="border border-gray-200 px-4 py-2">SL</th>
+                  <th className="border border-gray-200 px-4 py-2">User Name</th>
+                  <th className="border border-gray-200 px-4 py-2">Task Priority</th>
+                  <th className="border border-gray-200 px-4 py-2">Task Title</th>
+                  <th className="border border-gray-200 px-4 py-2">Created At</th>
+                  <th className="border border-gray-200 px-4 py-2">Updated At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-3 text-center text-gray-500" colSpan={5}>
+                      No logs found.
+                    </td>
+                  </tr>
+                ) : (
+                  logs.map((log, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50 text-sm">
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{log.userName}</td>
+                      <td className="border px-4 py-2">{log.priority}</td>
+                      <td className="border px-4 py-2">{log.taskTitle}</td>
+                      <td className="border px-4 py-2">{log.createdAt}</td>
+                      <td className="border px-4 py-2">{log.updatedAt}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
           </div>
         </div>
       </section>
@@ -142,4 +177,4 @@ const AddonsPage = () => {
   );
 };
 
-export default AddonsPage;
+export default Loggs;

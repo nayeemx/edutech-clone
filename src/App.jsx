@@ -23,7 +23,9 @@ import Teacher from "./pages/Teacher/Teacher"; // Import
 import Admin from "./pages/Admin/Admin";       // Import
 import Business from "./pages/Business/Business";  // Import
 import AddonsPage from "./pages/Teacher/AddonsPage";
-import ToDo from "./components/TeacherComponent/ToDo";
+// import ToDo from "./components/TeacherComponent/ToDo";
+import TodoContainer from "./components/TeacherComponent/TodoContainer";
+import Loggs from "./components/TeacherComponent/Loggs";
 
 // Export the router!
 export const router = createBrowserRouter([
@@ -58,6 +60,7 @@ export const router = createBrowserRouter([
   { path: "admin", element: <Admin /> },      // Add route
   { path: "business", element: <Business /> }, // Add route
   { path: "addons", element: <AddonsPage /> }, // Add route
-  { path: "todo", element: <ToDo /> }, // Add route
-  { path: "*", element: <NotfoundPage /> }, // Put the wildcard route LAST
+  {path: "todo", element: <TodoContainer />},
+  { path: "loggs", element: <Loggs /> },
+  { path: "*", element: <NotfoundPage /> }, // not found page
 ]);
