@@ -1,42 +1,47 @@
-import { useState, useRef, useEffect } from 'react';
-import { FiSearch, FiSun, FiMoon } from 'react-icons/fi'; // Import icons
-import { BD, US } from "country-flag-icons/react/3x2";
+import { FiSearch, FiSun, FiMoon } from 'react-icons/fi';
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useAuth } from '../../provider/AuthProvider'; // Import useAuth
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../provider/AuthProvider';
+import { BD, US } from "country-flag-icons/react/3x2"; // Country Flags
+import { useState, useRef, useEffect } from 'react';
 
 const HeaderRight = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
-    const [language, setLanguage] = useState("English");
-    const [showDropdown, setShowDropdown] = useState(false);
-    const [selectedFlag, setSelectedFlag] = useState(<US className="w-6 h-auto" />);
+    const { signOut } = useAuth();
+    const navigate = useNavigate();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState('English');
+    const [isDarkMode, setIsDarkMode] = useState(false);
     const dropdownRef = useRef(null);
-    const navigate = useNavigate(); // Get the navigate function
-    const { signOut } = useAuth(); // Get the signOut function
 
-    const handleLanguageChange = (lang) => {
-        setLanguage(lang);
-        setShowDropdown(false);
-        setSelectedFlag(lang === "English" ? <US className="w-6 h-auto" /> : <BD className="w-6 h-auto" />);
-    };
-
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowDropdown(false);
+    const handleLogout = async () => {
+        try {
+            await signOut();
+            navigate('/auth/login');
+        } catch (error) {
+            console.error("Logout failed:", error);
         }
     };
 
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    const handleLanguageSelect = (language) => {
+        setSelectedLanguage(language);
+        setIsDropdownOpen(false); // Close dropdown after selecting
+    };
+
+    const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+    
+        useEffect(() => {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }, []);
 
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
-        //  Add logic to actually change the theme of your application here.
-        //  This typically involves adding/removing a class to the <body> or root element.
         if (isDarkMode) {
             document.documentElement.classList.remove('dark');
         } else {
@@ -44,82 +49,59 @@ const HeaderRight = () => {
         }
     };
 
-    const handleLogout = async () => {
-        try {
-            await signOut();
-            navigate('/auth/login'); // Redirect to login page after successful logout
-        } catch (error) {
-            console.error("Logout failed:", error);
-            // Optionally show an error message to the user
-        }
-    };
-
     return (
         <>
-            <section className="flex items-center justify-between">
-                <div className='ml-4'>
-                    <div className="relative mr-4">
+            <header className="w-full h-full flex flex-col justify-between md:flex-row md:items-center">
+                <div>
+                    {/* search */}
+                    <div className="relative">
                         <input
                             type="text"
                             placeholder="Search in app for students ..."
-                            className={`w-[20vw] px-4 py-2 pr-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-700 border-gray-300'}`}
-
+                            className="w-[92vw] relative left-[2vw] md:left-[0.6vw] md:w-[37.3vw] lg:w-[30vw] xl:w-[25vw] px-4 py-2 my-2 pr-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-700 border-gray-300 placeholder-gray-400"
                         />
                         <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     </div>
                 </div>
 
-                <div>
+                <div className="flex items-center justify-center gap-2 md:mr-2">
                     {/* Language Dropdown */}
-                    <div className="absolute top-[4vh] right-[11vw] flex items-center gap-6">
-                        <div className="relative inline-block text-left" ref={dropdownRef}>
-                            <div>
-                                <button
-                                    onClick={() => setShowDropdown(!showDropdown)}
-                                    type="button"
-                                    className="inline-flex justify-center items-center gap-2 w-full text-sm font-medium text-gray-700"
-                                    id="options-menu"
-                                    aria-haspopup="true"
-                                    aria-expanded={showDropdown}
-                                >
-                                    {selectedFlag}
-                                    <span className="relative">{language}</span>
-                                    <MdKeyboardArrowDown className="text-lg" />
-                                </button>
-                            </div>
-
-                            {showDropdown && (
-                                <div className="origin-top-right absolute right-0 mt-2 w-[8vw] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                    <div
-                                        className="py-1"
-                                        role="menu"
-                                        aria-orientation="vertical"
-                                        aria-labelledby="options-menu"
-                                    >
-                                        <button
-                                            onClick={() => handleLanguageChange("English")}
-                                            className="flex items-center gap-4 px-4 py-2 text-sm text-gray-700 hover:text-gray-900 w-full text-left"
-                                            role="menuitem"
-                                        >
-                                            <US className="w-6 h-auto" />
-                                            <span>English</span>
-                                        </button>
-                                        <button
-                                            onClick={() => handleLanguageChange("Bangla")}
-                                            className="flex items-center gap-4 px-4 py-2 text-sm text-gray-700 hover:text-gray-900 w-full text-left"
-                                            role="menuitem"
-                                        >
-                                            <BD className="w-6 h-auto" />
-                                            <span>Bangla</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                    <div className="relative inline-block text-left" ref={dropdownRef}>
+                        <div>
+                            <button
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="inline-flex justify-center w-[32vw] md:w-[14vw] lg:w-[10vw] xl:w-[8vw] 2xl:w-[7vw] rounded-md border border-gray-300 shadow-sm p-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                            >
+                                {selectedLanguage === 'English' ? <US className="w-5 h-5 mr-2" /> : <BD className="w-5 h-5 mr-2" />}
+                                {selectedLanguage}
+                                <MdKeyboardArrowDown className="text-lg" />
+                            </button>
                         </div>
-                    </div>
-                </div>
 
-                <div className='flex items-center gap-8 mr-8'>
+                        {isDropdownOpen && (
+                            <div className="origin-top-right absolute left-0 mt-2 w-[34vw] md:w-[14vw] lg:w-[10vw] xl:w-[8vw] 2xl:w-[7vw] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    <button
+                                        onClick={() => handleLanguageSelect('English')}
+                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem"
+                                    >
+                                        <US className="w-5 h-5 mr-2" />
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => handleLanguageSelect('Bangla')}
+                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem"
+                                    >
+                                        <BD className="w-5 h-5 mr-2" />
+                                        Bangla
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <div>
                         {/* Dark Mode Toggle */}
                         <button
@@ -132,18 +114,19 @@ const HeaderRight = () => {
                         </button>
                     </div>
 
+                    {/* thunder icon */}
                     <div>
                         <AiFillThunderbolt />
                     </div>
 
+                    {/* logout icon */}
                     <div>
-                        {/* Logout Button */}
                         <button onClick={handleLogout} className="focus:outline-none cursor-pointer">
                             <RiLogoutCircleRLine />
                         </button>
                     </div>
                 </div>
-            </section>
+            </header>
         </>
     );
 };

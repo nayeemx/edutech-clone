@@ -4,6 +4,13 @@ import tailwindcss from '@tailwindcss/vite'  // Assuming you have Tailwind set u
 
 // https://vite.dev/config/
 export default defineConfig({
+  theme: {
+    extend: {
+      screens: {
+        ultrawide: '2560px', // Define the custom ultrawide breakpoint
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(), // Make sure your tailwind.config.js is correctly configured

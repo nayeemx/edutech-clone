@@ -100,7 +100,7 @@ const MainContent = () => {
   ];
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen relative">
+    <div className="p-4 bg-gray-100 min-h-[86.9vh] relative">
       {/* Top and Bottom Sections remain unchanged */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div className="flex items-center bg-white p-6 rounded-lg shadow-lg w-[99.2%]">
@@ -145,20 +145,16 @@ const MainContent = () => {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-lg w-[99.2%]">
-        <div className="flex items-center">
-        <img
-              src={takapoysha}
-              alt="icon"
-              className="w-8 h-8 mr-2"
-            />
-            
-          <div>
-          <h2 className="text-xl font-semibold flex items-center">
-            EduPay Campaign
-          </h2>
-          <p className="text-gray-600 text-sm">Edutechs Team</p>
+          <div className="flex items-center">
+            <img src={takapoysha} alt="icon" className="w-8 h-8 mr-2" />
+
+            <div>
+              <h2 className="text-xl font-semibold flex items-center">
+                EduPay Campaign
+              </h2>
+              <p className="text-gray-600 text-sm">Edutechs Team</p>
+            </div>
           </div>
-        </div>
           <p className="text-gray-700 mt-2">
             Use EduPay to automate your money collections and avail a bulk 10%
             discount on all your future subscriptions. Completely free to use
@@ -191,7 +187,7 @@ const MainContent = () => {
         </div>
 
         {/* Bottom Section (No Changes) */}
-        <div className="w-[49.4%] px-[4vw] py-[4vh] bg-white rounded-lg shadow-lg">
+        <div className="w-[49.4%] px-[4vw] py-[4vh] bg-white rounded-lg shadow-lg h-[40vh] overflow-auto">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Upcoming Events</h2>
             <span className="cursor-pointer">↻</span>
@@ -199,7 +195,7 @@ const MainContent = () => {
               New Event +
             </button>
           </div>
-          <div className="text-center h-[28vh] overflow-y-scroll">
+          <div className="text-center h-[28vh]">
             <img
               src={biral}
               alt=""
@@ -210,16 +206,12 @@ const MainContent = () => {
         </div>
       </section>
 
-      <section className="bg-white absolute bottom-0 left-0 p-[1rem] font-medium w-full">
-        <p>Copyright Edutechs © 2025 Teacher V69.60</p>
-      </section>
-
       {/* Chat Icon */}
       <div>
-                <p className="fixed right-[1.4vw] top-[39rem] bg-blue-500 p-[10px] w-[4vw] h-[8.6vh] z-10 rounded-full">
-                <RiChat2Fill className="text-white text-4xl -rotate-[9deg] relative top-[0.4vh] left-[0.3vw]" />
-                </p>
-              </div>
+        <p className="fixed right-[1.4vw] top-[39rem] bg-blue-500 p-[10px] w-[4vw] h-[8.6vh] z-10 rounded-full">
+          <RiChat2Fill className="text-white text-4xl -rotate-[9deg] relative top-[0.4vh] left-[0.3vw]" />
+        </p>
+      </div>
     </div>
   );
 };

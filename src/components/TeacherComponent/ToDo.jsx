@@ -9,6 +9,7 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import Tasks from "./Tasks"; // Assuming Tasks component exists and receives props
+import TodoReport from "../../components/TeacherComponent/TodoReport";
 
 const ToDo = () => {
     // --- State Declarations ---
@@ -42,7 +43,7 @@ const ToDo = () => {
         { value: "low", label: "Low", color: 'green' },
     ];
     const colorOptions = [
-        '#FFF', '#fecaca', '#fef08a', '#bbf7d0', '#bfdbfe', '#e9d5ff', '#fbcfe8', '#d1d5db',
+        '#FFF', '#fecaca', '#fffbe0', '#bbf7d0', '#bfdbfe', '#e9d5ff', '#fbcfe8', '#d1d5db',
         '#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51', '#d62828', '#457b9d',
         '#a8dadc', '#6c5b7b', '#355c7d', '#f67280'
     ];
@@ -246,21 +247,38 @@ const ToDo = () => {
     };
 
     const handleDeleteExistingTask = async (taskId, e) => {
-          e.stopPropagation();
-          const userId = auth.currentUser?.uid;
-          if (!userId) return;
-          let deletedTitle = 'Unknown Task';
-          try {
-              const snapshot = await db.ref(`tasks/${userId}/${taskId}/title`).once('value');
-              deletedTitle = snapshot.val() || deletedTitle;
-              await db.ref(`tasks/${userId}/${taskId}`).remove();
-              await logAction('delete_task', taskId, { title: deletedTitle });
-              console.log(`Task ${taskId} deleted.`);
-          } catch (error) {
-              console.error("Error deleting task:", error);
-              await logAction('delete_error', taskId, { error: error.message });
-          }
-      };
+        e.stopPropagation();
+        const userId = auth.currentUser?.uid;
+        if (!userId) return;
+        
+        try {
+            // Get the full task data for detailed logging
+            const taskSnapshot = await db.ref(`tasks/${userId}/${taskId}`).once('value');
+            const taskData = taskSnapshot.val() || {};
+            
+            // Log the deletion with comprehensive data
+            await logAction('delete_task', taskId, {
+                title: taskData.title || 'Unknown Task',
+                taskData: {
+                    priority: taskData.priority || null,
+                    color: taskData.color || null,
+                    pin: taskData.pin || false,
+                    from_date: taskData.from_date || null,
+                    to_date: taskData.to_date || null,
+                    subtasks_count: taskData.Task ? taskData.Task.length : 0,
+                    completed_subtasks: taskData.Task ? taskData.Task.filter(t => t.completed).length : 0
+                }
+            });
+            
+            // After logging, delete the task
+            await db.ref(`tasks/${userId}/${taskId}`).remove();
+            console.log(`Task ${taskId} deleted.`);
+            
+        } catch (error) {
+            console.error("Error deleting task:", error);
+            await logAction('delete_error', taskId, { error: error.message });
+        }
+    };
 
 
     // Edit Task Prep
@@ -289,117 +307,233 @@ const ToDo = () => {
 
     // --- Render ---
     return (
-        <div>
-            <main className="p-4 w-full mx-auto">
-                <div className="flex items-center justify-between mb-4">
-                    <div><h3 className="text-2xl font-semibold">To Do List</h3></div>
-                    <div className="p-4 text-xl font-semibold">{userName ? `Welcome, ${userName}!` : "Loading..."}</div>
+      <div>
+        <main className="p-4 w-full mx-auto">
+          <div className="flex flex-col md:flex-row justify-center md:justify-between items-center mb-4">
+            <div>
+              <h3 className="text-2xl font-semibold">To Do List</h3>
+            </div>
+            <div className="p-4 text-xl font-semibold">
+              <span className="font-normal">Welcome</span>
+              {userName ? `, ${userName}!` : "Loading..."}
+            </div>
+          </div>
+
+          <div>
+                <TodoReport />
+            </div>
+
+          <section className="rounded-lg p-4 shadow-lg mb-4">
+            {!isTaskExpanded ? (
+              <input
+                type="text"
+                placeholder="+ Add Task"
+                className="cursor-pointer my-6 p-3 border-2 border-gray-300 rounded-lg w-full font-bold text-gray-500 hover:bg-gray-50"
+                onClick={() => setIsTaskExpanded(true)}
+              />
+            ) : (
+              <div
+                ref={taskCardRef}
+                className="p-4 border-2 border-gray-300 rounded-lg w-full bg-white shadow-lg mb-4"
+              >
+                <input
+                  type="text"
+                  placeholder="Title"
+                  className="p-2 border border-gray-300 rounded-lg w-full mb-3 text-lg font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+
+                <div className="space-y-2 mb-4">
+                  {currentTasks.map((task, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center gap-2 ${
+                        task.isSubtask ? "ml-8" : ""
+                      }`}
+                    >
+                      <span
+                        className="cursor-move text-gray-400 hover:text-gray-600"
+                        onClick={() => toggleSubtask(index)}
+                        title="Toggle Subtask"
+                      >
+                        {" "}
+                        <BsGripVertical />{" "}
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={task.completed}
+                        onChange={() => handleTaskComplete(index)}
+                        className="mr-2 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Task Item"
+                        value={task.name}
+                        onChange={(e) =>
+                          handleTaskChange(index, e.target.value)
+                        }
+                        onKeyDown={handleAddTask}
+                        // Assign ref using the index
+                        ref={(el) =>
+                          (taskInputRefs.current[index] = { current: el })
+                        } // Correct ref assignment
+                        className="p-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {(currentTasks.length > 1 || task.name.trim()) && (
+                        <button
+                          onClick={() => handleDeleteCurrentTask(index)}
+                          className="ml-2 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100"
+                        >
+                          <BsTrash />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
-                <section>
-                    {!isTaskExpanded ? (
-                        <input type="text" placeholder="+ Add Task" className="cursor-pointer my-6 p-3 border-2 border-gray-300 rounded-lg w-full font-bold text-gray-500 hover:bg-gray-50" onClick={() => setIsTaskExpanded(true)} />
-                    ) : (
-                        <div ref={taskCardRef} className="p-4 border-2 border-gray-300 rounded-lg w-full bg-white shadow-lg mb-4">
-                            <input
-                                type="text" placeholder="Title"
-                                className="p-2 border border-gray-300 rounded-lg w-full mb-3 text-lg font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                value={title} onChange={(e) => setTitle(e.target.value)}
-                            />
-
-                            <div className="space-y-2 mb-4">
-                                {currentTasks.map((task, index) => (
-                                    <div key={index} className={`flex items-center gap-2 ${task.isSubtask ? "ml-8" : ""}`}>
-                                        <span className="cursor-move text-gray-400 hover:text-gray-600" onClick={() => toggleSubtask(index)} title="Toggle Subtask"> <BsGripVertical/> </span>
-                                        <input
-                                            type="checkbox" checked={task.completed} onChange={() => handleTaskComplete(index)}
-                                            className="mr-2 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                        />
-                                        <input
-                                            type="text" placeholder="Task Item" value={task.name}
-                                            onChange={(e) => handleTaskChange(index, e.target.value)}
-                                            onKeyDown={handleAddTask}
-                                            // Assign ref using the index
-                                            ref={el => taskInputRefs.current[index] = { current: el }} // Correct ref assignment
-                                            className="p-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        />
-                                        {(currentTasks.length > 1 || task.name.trim()) && (
-                                            <button onClick={() => handleDeleteCurrentTask(index)} className="ml-2 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100">
-                                                <BsTrash />
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="flex items-center justify-start space-x-4 pt-3 border-t border-gray-200 relative">
-                                <div className="relative">
-                                    <button ref={dateButtonRef} onClick={toggleCalendar}
-                                      className="p-2 border border-gray-300 rounded-lg flex items-center gap-2 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                      <FaRegCalendarAlt />
-                                      {dateRange[0]?.startDate
-                                       ? `${format(dateRange[0].startDate, "MMM d")}${dateRange[0]?.endDate && !dayjs(dateRange[0].startDate).isSame(dateRange[0].endDate, 'day') ? ` - ${format(dateRange[0].endDate, "MMM d")}` : ''}`
-                                       : "Set Date"}
-                                    </button>
-                                    {isCalendarOpen && (
-                                      <div ref={calendarRef} className="absolute left-0 top-full mt-2 z-20 bg-white shadow-xl rounded-lg border border-gray-200">
-                                       <DateRange
-                                        onChange={handleDateRangeChange}
-                                        ranges={dateRange}
-                                        months={2} direction="horizontal" showDateDisplay={false}
-                                        rangeColors={['#3b82f6']}
-                                        />
-                                       </div>
-                                      )}
-                                </div>
-
-                                <div className="relative">
-                                    <button data-priority-toggle onClick={togglePriority} className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <IconContext.Provider value={{ size: "1.2em", color: priority ? priorityColors[priority] : 'text-gray-500' }}> <FaExclamationTriangle /> </IconContext.Provider>
-                                    </button>
-                                    {isPriorityOpen && (
-                                        <div ref={priorityDropdownRef} className="absolute top-full mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-20">
-                                            {priorityOptions.map((p, index) => (
-                                                <button key={index} onClick={() => handlePriorityChange(p.value)}
-                                                    className="block w-full text-left py-2 px-4 hover:bg-gray-100 text-sm capitalize"
-                                                > {p.label} </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="relative">
-                                    <button data-color-toggle onClick={toggleColor} className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <IconContext.Provider value={{ size: "1.2em", color: color || 'text-gray-500' }}> <FaPalette /> </IconContext.Provider>
-                                    </button>
-                                    {isColorOpen && (
-                                        <div ref={colorDropdownRef} className="absolute top-full mt-2 p-2 bg-white border border-gray-200 rounded shadow-lg z-20 grid grid-cols-4 gap-2">
-                                            {colorOptions.map((c, i) => (
-                                                <button key={i} onClick={() => handleColorChange(c)} style={{ backgroundColor: c }}
-                                                    className={`w-6 h-6 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 ${color === c ? 'ring-2 ring-blue-600 ring-offset-1' : ''}`}
-                                                    aria-label={`Color ${c}`}
-                                                />
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <button onClick={handlePinToggle} className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                     <IconContext.Provider value={{ size: "1.2em", color: pin ? 'text-yellow-500' : 'text-gray-500' }}>
-                                      {pin ? <BsPinFill /> : <BsPinAngleFill />}
-                                     </IconContext.Provider>
-                                </button>
-                            </div>
-                        </div>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-200 relative">
+                  {/* calender */}
+                  <div className="relative">
+                    <button
+                      ref={dateButtonRef}
+                      onClick={toggleCalendar}
+                      className="p-2 rounded-lg md:border-2 md:border-gray-300 flex items-center gap-2 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <FaRegCalendarAlt />
+                      <span className="hidden sm:inline">
+                        {dateRange[0]?.startDate
+                          ? `${format(dateRange[0].startDate, "MMM d")}${
+                              dateRange[0]?.endDate &&
+                              !dayjs(dateRange[0].startDate).isSame(
+                                dateRange[0].endDate,
+                                "day"
+                              )
+                                ? ` - ${format(dateRange[0].endDate, "MMM d")}`
+                                : ""
+                            }`
+                          : "Select Date"}
+                      </span>
+                    </button>
+                    {isCalendarOpen && (
+                      <div
+                        ref={calendarRef}
+                        className="absolute left-0 top-full mt-2 z-20 bg-white shadow-xl rounded-lg border border-gray-200"
+                      >
+                        <DateRange
+                          onChange={handleDateRangeChange}
+                          ranges={dateRange}
+                          months={2}
+                          direction="horizontal"
+                          showDateDisplay={false}
+                          rangeColors={["#3b82f6"]}
+                        />
+                      </div>
                     )}
-                </section>
+                  </div>
+                  {/* priority */}
+                  <div className="relative">
+                    <button
+                      data-priority-toggle
+                      onClick={togglePriority}
+                      className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <IconContext.Provider
+                        value={{
+                          size: "1.2em",
+                          color: priority
+                            ? priorityColors[priority]
+                            : "text-gray-500",
+                        }}
+                      >
+                        {" "}
+                        <FaExclamationTriangle />{" "}
+                      </IconContext.Provider>
+                    </button>
+                    {isPriorityOpen && (
+                      <div
+                        ref={priorityDropdownRef}
+                        className="absolute top-full mt-2 w-[28vw] md:w-[11vw] lg:w-[9vw] xl:w-[6vw] bg-white border border-gray-200 rounded shadow-lg z-20"
+                      >
+                        {priorityOptions.map((p, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handlePriorityChange(p.value)}
+                            className="block w-full text-left py-2 px-4 hover:bg-gray-100 text-sm capitalize"
+                          >
+                            {" "}
+                            {p.label}{" "}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* color */}
+                  <div className="relative">
+                    <button
+                      data-color-toggle
+                      onClick={toggleColor}
+                      className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <IconContext.Provider
+                        value={{
+                          size: "1.2em",
+                          color: color || "text-gray-500",
+                        }}
+                      >
+                        {" "}
+                        <FaPalette />{" "}
+                      </IconContext.Provider>
+                    </button>
+                    {isColorOpen && (
+                      <div
+                        ref={colorDropdownRef}
+                        className="absolute top-full mt-2 p-2 bg-white border border-gray-200 rounded shadow-lg z-20 w-[38vw] md:w-[19vw] lg:w-[15vw] xl:w-[10vw] grid grid-cols-4 gap-2"
+                      >
+                        {colorOptions.map((c, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleColorChange(c)}
+                            style={{ backgroundColor: c }}
+                            className={`w-6 h-6 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 ${
+                              color === c
+                                ? "ring-2 ring-blue-600 ring-offset-1"
+                                : ""
+                            }`}
+                            aria-label={`Color ${c}`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* pin */}
+                  <button
+                    onClick={handlePinToggle}
+                    className="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <IconContext.Provider
+                      value={{
+                        size: "1.2em",
+                        color: pin ? "text-yellow-500" : "text-gray-500",
+                      }}
+                    >
+                      {pin ? <BsPinFill /> : <BsPinAngleFill />}
+                    </IconContext.Provider>
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
 
-                 {/* Display existing tasks using Tasks component */}
-                 <Tasks tasks={tasks} onEdit={handleEdit} onDelete={handleDeleteExistingTask} />
-
-            </main>
-        </div>
+          {/* Display existing tasks using Tasks component */}
+          <Tasks
+            tasks={tasks}
+            onEdit={handleEdit}
+            onDelete={handleDeleteExistingTask}
+            logAction={logAction}
+          />
+        </main>
+      </div>
     );
 };
 

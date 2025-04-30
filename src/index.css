@@ -9,6 +9,13 @@
   /*  Keep other Tailwind base styles you want  */
 }
 
+@theme {
+  --breakpoint-xs: 320px;
+  --breakpoint-2xs: 375px;
+  --breakpoint-3xs: 425px;
+  --breakpoint-4xl: 2560px;
+}
+
 /* Define the button variations using CSS classes */
 .btn-send-sms {
   background-color: #9193d1;
@@ -73,4 +80,49 @@
 
 .custom-button:hover .arrow-icon {
   @apply block; /* Show on hover */
+}
+
+/* date || date range || calender */
+
+/* Add to your CSS file */
+.react-datepicker {
+  font-family: Arial, sans-serif;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.react-datepicker__day--selected {
+  background-color: #3b82f6;
+  border-radius: 50%;
+}
+
+.hidden-date-picker {
+  position: absolute;
+  visibility: hidden;
+}
+
+.date-display {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.date-display:hover {
+  background-color: #f0f0f0;
+}
+
+.rdrMonths {
+  /* flex-direction: column; */
+}
+
+/* for loggs page */
+
+/* src/index.css */
+.menu-item {
+  @apply flex items-center p-2 rounded hover:bg-gray-100;
+}
+
+.menu-item.active {
+  @apply bg-blue-500 text-white;
 }

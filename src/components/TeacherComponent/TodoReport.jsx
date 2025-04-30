@@ -118,13 +118,13 @@ const TodoReport = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* 🔸 Task Status Pie Chart */}
                 <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4">
-                    <h3 className="text-center font-semibold mb-4">Task Status</h3>
+                    <h3 className="text-center font-semibold text-2xl mb-4">Task Status</h3>
                     <div ref={pieChartRef} style={{ height: 250 }} />
                 </div>
 
                 {/* 🔸 Priority Breakdown Block */}
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4">
-                    <h3 className="text-center font-semibold mb-4">Priority Breakdown</h3>
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-4 h-[38vh] lg:h-[54vh]">
+                    <h3 className="text-center font-semibold text-2xl mb-4">Priority Breakdown</h3>
                     <div className="space-y-4 relative top-[18%]">
                         {["high", "medium", "low"].map((level) => (
                             <div key={level}>
